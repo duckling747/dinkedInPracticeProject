@@ -12,8 +12,8 @@
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
     </properties>
     
     <parent>
@@ -132,4 +132,16 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
+    <reporting>
+	    <plugins>
+	        <plugin>
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-checkstyle-plugin</artifactId>
+	            <version>3.0.0</version>
+              <configuration>
+                <configLocation>google_checks.xml</configLocation>
+              </configuration>
+	        </plugin>
+	    </plugins>
+	</reporting>
 </project>
