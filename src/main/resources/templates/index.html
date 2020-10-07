@@ -2,12 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="UTF-8" />
-        <title>Hello world</title>
+        <title>DinkedIn Finland: Log In or Sign Up</title>
     </head>
     <body>
+        <nav th:replace="fragments/global/navbar :: navbar"></nav>
 
-        <h1 th:text="${'Hello ' + message}">Hello world</h1>
+        <h1>Welcome to your professional community</h1>
 
-
+        <footer th:replace="fragments/global/footer :: footer"></footer>
     </body>
 </html>
