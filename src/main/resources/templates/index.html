@@ -3,11 +3,16 @@
     <head>
         <meta charset="UTF-8" />
         <title>DinkedIn Finland: Log In or Sign Up</title>
+        <link th:insert="fragments/global/navbar :: link" />
+        <link th:href="@{/css/index.css}" rel="stylesheet" />
     </head>
     <body>
         <nav th:replace="fragments/global/navbar :: navbar"></nav>
 
         <h1>Welcome to your professional community</h1>
+        <a th:href="@{/jobs}">Search for a job</a>
+        <a >Find a person you know</a>
+        <a >Learn a new skill</a>
 
         <footer th:replace="fragments/global/footer :: footer"></footer>
     </body>

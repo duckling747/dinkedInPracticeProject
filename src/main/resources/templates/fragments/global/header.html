@@ -5,8 +5,12 @@
         <title>Layout</title>
     </head>
     <body>
-        <header th:fragment="header" id="header">
-            DinkedIn
-        </header>
+        <div th:fragment="header" id="header">
+            <header>
+                <a th:href="@{/}">
+                    <img id="logo" th:src="@{/img/logo.png}" alt="DinkedIn" />
+                </a>
+            </header>
+        </div>
     </body>
 </html>

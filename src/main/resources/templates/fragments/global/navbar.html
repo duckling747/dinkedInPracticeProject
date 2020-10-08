@@ -2,13 +2,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
     <head lang="en">
         <meta charset="UTF-8" />
-        <title>Layout</title>
+        <title>Navbar</title>
+        <link th:href="@{/css/navbar.css}" rel="stylesheet" />
     </head>
     <body>
         <nav th:fragment="navbar">
-            <header th:replace="fragments/global/header :: header"></header>
-            <a th:href="@{/join}">Join now</a>
-            <a th:href="@{/signin}">Sign in</a>
+            <div th:replace="fragments/global/header :: header">
+            </div>
+            <div th:fragment="authlinks" id="authlinks">
+                <a th:href="@{/join}">Join now</a>
+                <a th:href="@{/login}">Sign in</a>
+            </div>
         </nav>
     </body>
 </html>

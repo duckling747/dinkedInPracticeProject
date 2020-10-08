@@ -1,0 +1,10 @@
+nav {
+    display: inline-block;
+    width: 100%;
+    text-align: left;
+    background-color: whitesmoke;
+}
+
+div#authlinks {
+    float: right;
+}
