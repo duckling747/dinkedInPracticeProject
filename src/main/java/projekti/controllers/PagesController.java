@@ -17,7 +17,7 @@ public class PagesController {
     }
 
     @GetMapping("/join")
-    public String wall() {
-        return "join";
+    public String reactJoin() {
+        return "redirect:/register/index.html";
     }
 }
