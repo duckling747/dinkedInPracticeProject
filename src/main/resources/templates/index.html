@@ -9,10 +9,26 @@
     <body>
         <nav th:replace="fragments/global/navbar :: navbar"></nav>
 
-        <h1>Welcome to your professional community</h1>
-        <a th:href="@{/jobs}">Search for a job</a>
-        <a >Find a person you know</a>
-        <a >Learn a new skill</a>
+        <section class="hero">
+            <h1>Welcome to your professional community</h1>
+            <img
+                th:src="@{/img/office_men.png}"
+                alt="office people"
+                align="right"
+                style="width:40%"
+            />
+            <div id="intent-module">
+                <p>
+                    <a th:href="@{/jobs}">Search for a job</a>
+                </p>
+                <p>
+                    <a >Find a person you know</a>
+                </p>
+                <p>
+                    <a >Learn a new skill</a>
+                </p>
+            <div>
+        </section>
 
         <footer th:replace="fragments/global/footer :: footer"></footer>
     </body>
