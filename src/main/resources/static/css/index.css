@@ -1,3 +1,7 @@
 body {
     text-rendering: optimizeLegibility;
 }
+
+.circle img {
+    border-radius: 50%;
+}
