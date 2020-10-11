@@ -1,7 +1,6 @@
 package projekti.services;
 
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,24 +15,24 @@ import projekti.repositories.AccountRepository;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    @Autowired
+  @Autowired
     private AccountRepository accountRepository;
 
-    @Override
-    public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
-        Account account = accountRepository.findByUsername(username);
-        if (account == null) {
-            throw new UsernameNotFoundException("no such user " + username);
-        }
-        return new org.springframework.security.core.userdetails.User(
-            account.getUsername(),
-            account.getPassword(),
-            true,
-            true,
-            true,
-            true,
-            Arrays.asList(new SimpleGrantedAuthority("USER"))
-        );
+  @Override
+  public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
+    final Account account = accountRepository.findByUsername(username);
+    if (account == null) {
+      throw new UsernameNotFoundException("no such user " + username);
     }
+    return new org.springframework.security.core.userdetails.User(
+        account.getUsername(),
+        account.getPassword(),
+        true,
+        true,
+        true,
+        true,
+        Arrays.asList(new SimpleGrantedAuthority("USER"))
+    );
+  }
 
 }
