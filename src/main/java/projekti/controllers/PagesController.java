@@ -6,18 +6,28 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class PagesController {
     
-    @GetMapping("/")
-    public String index() {
-        return "index";
-    }
+  @GetMapping("/")
+  public String index() {
+    return "index";
+  }
 
-    @GetMapping("/jobs")
-    public String jobs() {
-        return "jobs";
-    }
+  @GetMapping("/jobs")
+  public String jobs() {
+    return "jobs";
+  }
 
-    @GetMapping("/join")
-    public String reactJoin() {
-        return "redirect:/register/index.html";
-    }
+  @GetMapping("/join")
+  public String reactJoin() {
+    return "redirect:/register/index.html";
+  }
+
+  @GetMapping("/login")
+  public String login() {
+    return "login";
+  }
+
+  @GetMapping("/wall")
+  public String userWall() {
+    return "wall";
+  }
 }

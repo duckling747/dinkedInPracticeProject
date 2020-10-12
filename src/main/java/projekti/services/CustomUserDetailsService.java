@@ -16,7 +16,7 @@ import projekti.repositories.AccountRepository;
 public class CustomUserDetailsService implements UserDetailsService {
 
   @Autowired
-    private AccountRepository accountRepository;
+  private AccountRepository accountRepository;
 
   @Override
   public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {

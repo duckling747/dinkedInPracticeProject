@@ -14,27 +14,29 @@ public class AccountService {
   private AccountRepository accountRepository;
 
   /**
-   * Add a follower to target.
-   * @param target represents the one followed
-   * @param follower represents the follower to-be
+   * Add a connection between users.
+   * @param target a username
+   * @param follower another username
    */
   @Transactional
-  public void addFollower(final String target, final String follower) {
+  public void addConnection(final String target, final String follower) {
     final Account targetAccount = accountRepository.findByUsername(target);
     final Account followerAccount = accountRepository.findByUsername(follower);
-    targetAccount.getFollowers().add(followerAccount);
+    targetAccount.getConnections().add(followerAccount);
+    followerAccount.getConnections().add(targetAccount);
   }
 
   /**
-   * Remove a follower from target.
-   * @param target represents the one followed
-   * @param follower represents the removed follower
+   * Remove a connection between users.
+   * @param target a username
+   * @param follower another username
    */
   @Transactional
-  public void removeFollower(final String target, final String follower) {
+  public void removeConnection(final String target, final String follower) {
     final Account targetAccount = accountRepository.findByUsername(target);
     final Account followerAccount = accountRepository.findByUsername(follower);
-    targetAccount.getFollowers().remove(followerAccount);
+    targetAccount.getConnections().remove(followerAccount);
+    followerAccount.getConnections().remove(targetAccount);
   }
 
 }

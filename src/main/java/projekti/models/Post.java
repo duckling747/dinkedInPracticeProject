@@ -1,33 +1,25 @@
 package projekti.models;
 
-import java.math.BigInteger;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 @Entity
-public class Post extends AbstractPersistable<BigInteger> {
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+public class Post extends AbstractPersistable<Long> {
     
   @Column(columnDefinition = "TEXT")
   private String text;
 
   @ManyToOne
   private Account user;
-
-  public Post(final String text, final Account user) {
-    this.text = text;
-    this.user = user;
-  }
-
-  public String getText() {
-    return text;
-  }
-
-  public Account getUser() {
-    return user;
-  }
 
 }

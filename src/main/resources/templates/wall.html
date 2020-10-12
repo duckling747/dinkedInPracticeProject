@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <title>User wall</title>
+    </head>
+    <body>
+        <nav>
+            <div th:replace="fragments/global/header :: header">
+            </div>
+            <div>
+                Search for jobs here (implement me)
+            </div>
+            <div th:replace="fragments/global/navbar :: authlinks">
+            </div>
+        </nav>
+
+        <p>Wall page</p>
+
+        <footer th:replace="fragments/global/footer :: footer"></footer>
+    </body>
+</html>
