@@ -10,8 +10,9 @@
             <div th:replace="fragments/global/header :: header">
             </div>
             <div th:fragment="authlinks" id="authlinks">
-                <a th:href="@{/join}">Join now</a>
-                <a th:href="@{/login}">Sign in</a>
+                <a sec:authorize="!isAuthenticated()" th:href="@{/join}">Join now</a>
+                <a sec:authorize="!isAuthenticated()" th:href="@{/login}">Sign in</a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/logout}">Log out</a>
             </div>
         </nav>
     </body>
