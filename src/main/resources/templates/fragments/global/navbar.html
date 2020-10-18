@@ -12,7 +12,9 @@
             <div th:fragment="authlinks" id="authlinks">
                 <a sec:authorize="!isAuthenticated()" th:href="@{/join}">Join now</a>
                 <a sec:authorize="!isAuthenticated()" th:href="@{/login}">Sign in</a>
-                <a sec:authorize="isAuthenticated()" th:href="@{/logout}">Log out</a>
+                <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="POST">
+                    <button type="submit">Logout</button>
+                </form>
             </div>
         </nav>
     </body>

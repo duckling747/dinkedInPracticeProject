@@ -21,3 +21,20 @@ div#authlinks {
     vertical-align: middle;
     margin-right: 10px;
 }
+
+div#authlinks a:link {
+    font-family: arial, sans-serif;
+    color: #069;
+    font-size: small;
+}
+
+nav form button {
+    background: none!important;
+    border: none;
+    padding: 0!important;
+    font-family: arial, sans-serif;
+    color: #069;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: small;
+}

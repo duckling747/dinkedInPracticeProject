@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import projekti.services.CustomUserDetailsService;
 
@@ -30,7 +31,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   @Override
   public void configure(final HttpSecurity http) throws Exception {
     // take these out when production time /////////
-    http.csrf().disable();
+    http.csrf()
+      .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+
     http.headers().frameOptions().sameOrigin();
     /////////////////////////////////
     http.authorizeRequests()
@@ -43,6 +46,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
       .loginPage("/login")
       .defaultSuccessUrl("/wall")
       .failureUrl("/login?error")
+      .and()
+      .logout()
+      .deleteCookies("JSESSIONID", "XSRF-TOKEN")
+      .clearAuthentication(true)
+      .invalidateHttpSession(true)
       .and()
       .userDetailsService(userDetailsService);
   }

@@ -58,10 +58,16 @@ export function LoginCredentials() {
 
   async function sendData() {
     // send user to rest api
+    const cookieVal = document.cookie
+      .split('; ')
+      .find(r => r.startsWith('XSRF-TOKEN'))
+      .split('=')[1];
     const response = await fetch(url, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'X-XSRF-TOKEN': cookieVal,
+        'Accept': 'application/json',
       },
       redirect: 'follow',
       body: JSON.stringify({
