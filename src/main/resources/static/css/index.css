@@ -1,7 +1,27 @@
 body {
     text-rendering: optimizeLegibility;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+h1 {
+    font-size: xx-large;
+    text-align: center;
+    color: #069;
 }
 
 .circle img {
     border-radius: 50%;
+    padding-right: 10%;
+    width: 40%;
+}
+
+div#intent-module {
+    padding-top: 5%;
+    padding-left: 15%;
+    font-size: large;
+    width: 40%;
+}
+
+div#intent-module a:link {
+    color: #069;
 }

@@ -1,7 +1,9 @@
 package projekti.models;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -30,13 +32,10 @@ public class Account extends AbstractPersistable<Long> {
   private String firstName;
   private String lastName;
 
-  @ManyToMany(cascade = CascadeType.ALL)
-  @JoinTable(name = "Connections",
-      joinColumns = {@JoinColumn(name = "UserId")},
-      inverseJoinColumns = {@JoinColumn(name = "ConnectionId")})
-  private List<Account> connections = new ArrayList<>();
-
   @OneToMany(mappedBy = "user")
   private List<Post> posts = new ArrayList<>();
 
+  
+
+  
 }
