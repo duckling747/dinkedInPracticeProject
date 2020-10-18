@@ -3,23 +3,29 @@ package projekti.models;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+
+import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import org.springframework.data.jpa.domain.AbstractPersistable;
-
 @Entity
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
-public class Post extends AbstractPersistable<Long> {
-    
+public class Message extends AbstractPersistable<Long> {
+
   @Column(columnDefinition = "TEXT")
-  private String post;
+  private String message;
 
   @ManyToOne
   private Account user;
+
+  @OneToOne
+  private Account target;
+
+
 
 }
