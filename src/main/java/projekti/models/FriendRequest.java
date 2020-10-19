@@ -2,7 +2,6 @@ package projekti.models;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -18,13 +17,13 @@ import lombok.NoArgsConstructor;
 @Data
 public class FriendRequest extends AbstractPersistable<Long> {
 
+  private boolean accepted;
+
   @ManyToOne
-  @JsonBackReference
   private Account issuer;
 
-  @OneToOne
+  @ManyToOne
   private Account targetFriend;
 
-  private boolean accepted;
 
 }

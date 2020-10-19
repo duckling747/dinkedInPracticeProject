@@ -23,11 +23,12 @@ public class FriendService {
   public void sendFriendInvitation(final String from, final String to) {
     final Account aFrom = accountRepository.findByUsername(from);
     final Account aTo = accountRepository.findByUsername(to);
-    final FriendRequest req = new FriendRequest(aFrom, aTo, false);
+    final FriendRequest req = new FriendRequest(false, aFrom, aTo);
     friendRequestRepository.save(req);
   }
 
   public void getPendingFriendRequests(final String uname) {
       // do stuff
+      
   }
 }

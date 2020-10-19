@@ -32,9 +32,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   @Override
   public void configure(final HttpSecurity http) throws Exception {
     // take these out when production time /////////
-    //http.csrf()
-    //  .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
-    http.csrf().disable();
+    http.csrf()
+      .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+    //http.csrf().disable();
 
     http.headers().frameOptions().sameOrigin();
     /////////////////////////////////

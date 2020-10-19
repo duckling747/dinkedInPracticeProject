@@ -35,10 +35,15 @@ public class Account extends AbstractPersistable<Long> {
   private List<Post> posts = new ArrayList<>();
 
   @OneToMany(mappedBy = "issuer")
-  @JsonManagedReference
-  private List<FriendRequest> friends = new ArrayList<>();
+  private List<FriendRequest> sentFriendRequests = new ArrayList<>();
 
-  @OneToMany(mappedBy = "user")
-  private List<Message> messages = new ArrayList<>();
+  @OneToMany(mappedBy = "targetFriend")
+  private List<FriendRequest> receivedFriendRequests = new ArrayList<>();
+
+  @OneToMany(mappedBy = "sender")
+  private List<Message> sentMessages = new ArrayList<>();
+
+  @OneToMany(mappedBy = "recipient")
+  private List<Message> receivedMessages = new ArrayList<>();
 
 }

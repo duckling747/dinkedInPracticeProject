@@ -21,10 +21,10 @@ public class Message extends AbstractPersistable<Long> {
   private String message;
 
   @ManyToOne
-  private Account user;
+  private Account sender;
 
-  @OneToOne
-  private Account target;
+  @ManyToOne
+  private Account recipient;
 
 
 
