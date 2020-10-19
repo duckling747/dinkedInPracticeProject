@@ -1,14 +1,11 @@
 package projekti.controllers;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,9 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import projekti.models.Account;
-import projekti.models.FriendRequest;
 import projekti.repositories.AccountRepository;
-import projekti.repositories.FriendRequestRepository;
 
 @RestController
 public class AccountController {
@@ -69,25 +64,4 @@ public class AccountController {
     return ret;
   }
 
-  @Autowired
-  private FriendRequestRepository rep;
-
-  @GetMapping("adding")
-  public Map<String,String> adding() {
-    Account a1 = new Account("username", "password", "firstName", "lastName", new ArrayList<>(),
-        new ArrayList<>(), new ArrayList<>());
-    Account a2 = new Account("username2", "password2", "firstName2", "lastName2", new ArrayList<>(),
-        new ArrayList<>(), new ArrayList<>());
-    accountRepository.save(a1);
-    accountRepository.save(a2);
-    rep.save(new FriendRequest(a1, a2, false));
-    Map<String,String> m = new HashMap<>();
-    m.put("success", "jeah");
-    return m;
-  }
-
-  @GetMapping("/testing")
-  public List<FriendRequest> getme() {
-    return rep.findAll();
-  }
 }

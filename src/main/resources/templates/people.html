@@ -2,22 +2,37 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="UTF-8" />
-        <title>User wall</title>
+        <title>Find people</title>
         <link th:insert="fragments/global/footer :: footer-css" />
         <link th:insert="fragments/global/navbar :: navbar-css" />
+
     </head>
     <body>
         <nav>
             <div th:replace="fragments/global/header :: header">
             </div>
-            <div>
-                Search for jobs here (implement me)
-            </div>
             <div th:replace="fragments/global/navbar :: authlinks">
             </div>
         </nav>
 
-        <p>Wall page</p>
+        <h2>Find people</h2>
+
+        <ul>
+            <li th:each="person : ${accountPage.content}">
+                <div>
+                    <div th:text="${person.username}">username</div>
+                </div>
+            </li>
+        </ul>
+
+        <nav th:if="${accountPage.totalPages > 0}" >
+            <a
+                th:each="pageNumber : ${pageNumbers}"
+                th:href="@{/people(size=${accountPage.size}, page=${pageNumber})}"
+                th:text="${pageNumber}"
+            >
+            </a>
+        </nav>
 
         <footer th:replace="fragments/global/footer :: footer"></footer>
     </body>
