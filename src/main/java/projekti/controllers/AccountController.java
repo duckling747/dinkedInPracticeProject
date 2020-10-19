@@ -16,10 +16,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import projekti.models.Account;
+import projekti.models.FriendRequest;
 import projekti.repositories.AccountRepository;
+import projekti.repositories.FriendRequestRepository;
 
 @RestController
 public class AccountController {
+
+  @Autowired
+  private FriendRequestRepository friendRequestRepository;
     
   @Autowired
   private AccountRepository accountRepository;
@@ -54,14 +59,53 @@ public class AccountController {
         .getContext()
         .getAuthentication()
         .getPrincipal();
-    final Map<String,String> ret = new HashMap<>(3);
+    String uname;
     if (principal instanceof UserDetails) {
-      final String uname = ((UserDetails) principal).getUsername();
-      ret.put("username", uname);
+      uname = ((UserDetails) principal).getUsername();
     } else {
-      ret.put("username", principal.toString());
+      uname = principal.toString();
     }
-    return ret;
+    return Map.of("username", uname);
+  }
+
+  private long addAccountToDB(String uname, String fname, String lname, String pw) {
+    Account acco = new Account();
+    acco.setFirstName(fname);
+    acco.setLastName(lname);
+    acco.setPassword(passwordEncoder.encode(pw));
+    acco.setUsername(uname);
+    return accountRepository.save(acco).getId();
+  }
+
+  private long addFriendRequestToDB(String uname1, String uname2) {
+    FriendRequest f = new FriendRequest(false,
+        accountRepository.findByUsername(uname1),
+        accountRepository.findByUsername(uname2)
+    );
+    return friendRequestRepository.save(f).getId();
+  }
+
+
+
+  @GetMapping("/accounts/manualtest")
+  public Map<String,String> addManuallyDefaultStuff() {
+    accountRepository.deleteAll();
+    friendRequestRepository.deleteAll();
+    addAccountToDB("Arnold", "b", "c", "pw");
+    addAccountToDB("Bertrand", "b", "c", "pw");
+    addAccountToDB("Bartholomew", "b", "c", "pw");
+    addAccountToDB("Christine", "b", "c", "pw");
+    addAccountToDB("Quentin", "b", "c", "pw");
+    addAccountToDB("Ruth", "b", "c", "pw");
+    addFriendRequestToDB("Arnold", "Bertrand");
+    addFriendRequestToDB("Arnold", "Bartholomew");
+    addFriendRequestToDB("Bartholomew", "Christine");
+    return Map.of("result", "success");
+  }
+
+  @GetMapping("/accounts/friendrequests")
+  public List<FriendRequest> getFReqs() {
+    return friendRequestRepository.findByAcceptedFalse();
   }
 
 }

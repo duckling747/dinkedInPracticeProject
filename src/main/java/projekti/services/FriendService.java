@@ -10,6 +10,7 @@ import projekti.repositories.AccountRepository;
 import projekti.repositories.FriendRequestRepository;
 
 @Service
+@Transactional
 public class FriendService {
 
 
@@ -18,8 +19,7 @@ public class FriendService {
 
   @Autowired
   private AccountRepository accountRepository;
-    
-  @Transactional
+
   public void sendFriendInvitation(final String from, final String to) {
     final Account aFrom = accountRepository.findByUsername(from);
     final Account aTo = accountRepository.findByUsername(to);

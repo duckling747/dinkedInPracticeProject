@@ -26,12 +26,14 @@
         </ul>
 
         <nav th:if="${accountPage.totalPages > 0}" >
-            <a
-                th:each="pageNumber : ${pageNumbers}"
-                th:href="@{/people(size=${accountPage.size}, page=${pageNumber})}"
-                th:text="${pageNumber}"
-            >
-            </a>
+            <div th:each="pageNumber : ${pageNumbers}">
+                <a
+                    th:href="@{/people(size=${accountPage.size}, page=${pageNumber})}"
+                    th:text="${pageNumber}"
+                >
+                </a>
+                <span>&nbsp;</span>
+            </div>
         </nav>
 
         <footer th:replace="fragments/global/footer :: footer"></footer>

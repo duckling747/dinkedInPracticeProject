@@ -9,7 +9,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,18 +32,28 @@ public class Account extends AbstractPersistable<Long> {
   private String firstName;
   private String lastName;
 
+  @JsonBackReference
+  @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
   @OneToMany(mappedBy = "user")
   private List<Post> posts = new ArrayList<>();
 
+  @JsonBackReference
+  @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
   @OneToMany(mappedBy = "issuer")
   private List<FriendRequest> sentFriendRequests = new ArrayList<>();
 
+  @JsonBackReference
+  @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
   @OneToMany(mappedBy = "targetFriend")
   private List<FriendRequest> receivedFriendRequests = new ArrayList<>();
 
+  @JsonBackReference
+  @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
   @OneToMany(mappedBy = "sender")
   private List<Message> sentMessages = new ArrayList<>();
 
+  @JsonBackReference
+  @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
   @OneToMany(mappedBy = "recipient")
   private List<Message> receivedMessages = new ArrayList<>();
 
