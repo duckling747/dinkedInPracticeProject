@@ -1,6 +1,5 @@
 package projekti;
 
-import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -9,18 +8,14 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Random;
 
-import org.hamcrest.core.Is;
-import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +24,7 @@ import projekti.models.FriendRequest;
 import projekti.repositories.AccountRepository;
 import projekti.repositories.FriendRequestRepository;
 
+@ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
@@ -58,14 +54,16 @@ public class AccountTest {
   }
 
   public void addSomeAccountsToDB(int count) {
+    Account[] accounts = new Account[count];
     for (int i = 0; i < count; i++) {
       Account acco = new Account();
       acco.setFirstName(randomString());
       acco.setLastName(randomString());
       acco.setUsername(randomString());
       acco.setPassword(passwordEncoder.encode(randomString()));
-      accountRepository.save(acco);
+      accounts[i] = acco;
     }
+    accountRepository.saveAll(List.of(accounts));
   }
 
   public long addAccountToDB(String uname, String fname, String lname, String pw) {
