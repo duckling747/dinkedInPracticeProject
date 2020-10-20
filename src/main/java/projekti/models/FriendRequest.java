@@ -47,12 +47,10 @@ public class FriendRequest extends AbstractPersistable<Long> {
   private boolean accepted;
 
   @JsonManagedReference
-  @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
   @ManyToOne
   private Account issuer;
 
   @JsonManagedReference
-  @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
   @ManyToOne
   private Account targetFriend;
 
