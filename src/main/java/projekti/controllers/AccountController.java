@@ -1,6 +1,5 @@
 package projekti.controllers;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -32,20 +31,20 @@ public class AccountController {
   @Autowired
   private PasswordEncoder passwordEncoder;
 
-  private static final String CONTEXT_ROOT = "/accounts";
+  private static final String ACCOUNTS = "/accounts";
 
-  @GetMapping(CONTEXT_ROOT)
+  @GetMapping(ACCOUNTS)
   public List<Account> listAccounts() {
     return accountRepository.findAll();
   }
 
-  @GetMapping(CONTEXT_ROOT + "/{id}")
+  @GetMapping(ACCOUNTS + "/{id}")
   public Account getAccount(@PathVariable Long id) {
     Optional<Account> o = accountRepository.findById(id);
     return o.get();
   }
 
-  @PostMapping(CONTEXT_ROOT)
+  @PostMapping(ACCOUNTS)
   public Account addAccount(@RequestBody Account account) {
 
     if (accountRepository.findByUsername(account.getUsername()) != null) {
@@ -55,7 +54,7 @@ public class AccountController {
     return accountRepository.save(account);
   }
 
-  @GetMapping(CONTEXT_ROOT + "/logged")
+  @GetMapping(ACCOUNTS + "/logged")
   public Map<String, String> getLogged() {
     final Object principal = SecurityContextHolder
         .getContext()
@@ -89,7 +88,7 @@ public class AccountController {
 
 
 
-  @GetMapping(CONTEXT_ROOT + "/manualtest")
+  @GetMapping(ACCOUNTS + "/manualtest")
   public Map<String,String> addManuallyDefaultStuff() {
     accountRepository.deleteAll();
     friendRequestRepository.deleteAll();
@@ -105,7 +104,7 @@ public class AccountController {
     return Map.of("result", "success");
   }
 
-  @GetMapping(CONTEXT_ROOT + "/friendrequests")
+  @GetMapping(ACCOUNTS + "/friendrequests")
   public List<FriendRequest> getFReqs() {
     return friendRequestRepository.findByAcceptedFalse();
   }
