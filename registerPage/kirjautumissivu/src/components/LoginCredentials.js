@@ -62,12 +62,14 @@ export function LoginCredentials() {
       .split('; ')
       .find(r => r.startsWith('XSRF-TOKEN'))
       .split('=')[1];
+    if (cookieVal) window.location.href = "/";
+
     const response = await fetch(url, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'X-XSRF-TOKEN': cookieVal,
         'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-XSRF-TOKEN': cookieVal
       },
       redirect: 'follow',
       body: JSON.stringify({
