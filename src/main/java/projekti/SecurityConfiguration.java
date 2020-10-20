@@ -15,7 +15,7 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import projekti.services.CustomUserDetailsService;
 
-@Profile("default")
+@Profile("production")
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
