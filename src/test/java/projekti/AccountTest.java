@@ -157,6 +157,9 @@ public class AccountTest {
       assertFalse(f.getIssuer().getUsername().equals("B"));
       assertFalse(f.getIssuer().getUsername().equals("C"));
       assertFalse(f.getIssuer().getUsername().equals("D"));
+      assertFalse(f.getTargetFriend().getUsername().equals("A"));
+      assertFalse(f.getTargetFriend().getUsername().equals("A"));
+      assertFalse(f.getTargetFriend().getUsername().equals("A"));
     }
     assertEquals(2, sentPending.size());
   }
@@ -171,6 +174,9 @@ public class AccountTest {
       assertFalse(f.getTargetFriend().getUsername().equals("A"));
       assertFalse(f.getTargetFriend().getUsername().equals("C"));
       assertFalse(f.getTargetFriend().getUsername().equals("D"));
+      assertFalse(f.getIssuer().getUsername().equals("B"));
+      assertFalse(f.getIssuer().getUsername().equals("B"));
+      assertFalse(f.getIssuer().getUsername().equals("B"));
     }
     assertEquals(1, receivedPending.size());
   }
