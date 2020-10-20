@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
@@ -21,7 +22,7 @@ public class Post extends AbstractPersistable<Long> {
   @Column(columnDefinition = "TEXT")
   private String post;
 
-  @JsonManagedReference
+  @JsonIgnoreProperties("posts")
   @ManyToOne
   private Account user;
 

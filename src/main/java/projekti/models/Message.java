@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import org.springframework.data.jpa.domain.AbstractPersistable;
@@ -22,11 +24,11 @@ public class Message extends AbstractPersistable<Long> {
   @Column(columnDefinition = "TEXT")
   private String message;
 
-  @JsonManagedReference
+  @JsonIgnoreProperties("sentMessages")
   @ManyToOne
   private Account sender;
 
-  @JsonManagedReference
+  @JsonIgnoreProperties("receivedMessages")
   @ManyToOne
   private Account recipient;
 

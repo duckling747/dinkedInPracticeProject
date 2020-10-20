@@ -32,18 +32,20 @@ public class AccountController {
   @Autowired
   private PasswordEncoder passwordEncoder;
 
-  @GetMapping("/accounts")
+  private static final String CONTEXT_ROOT = "/accounts";
+
+  @GetMapping(CONTEXT_ROOT)
   public List<Account> listAccounts() {
     return accountRepository.findAll();
   }
 
-  @GetMapping("/accounts/{id}")
+  @GetMapping(CONTEXT_ROOT + "/{id}")
   public Account getAccount(@PathVariable Long id) {
     Optional<Account> o = accountRepository.findById(id);
     return o.get();
   }
 
-  @PostMapping("/accounts")
+  @PostMapping(CONTEXT_ROOT)
   public Account addAccount(@RequestBody Account account) {
 
     if (accountRepository.findByUsername(account.getUsername()) != null) {
@@ -53,7 +55,7 @@ public class AccountController {
     return accountRepository.save(account);
   }
 
-  @GetMapping("/accounts/logged")
+  @GetMapping(CONTEXT_ROOT + "/logged")
   public Map<String, String> getLogged() {
     final Object principal = SecurityContextHolder
         .getContext()
@@ -87,7 +89,7 @@ public class AccountController {
 
 
 
-  @GetMapping("/accounts/manualtest")
+  @GetMapping(CONTEXT_ROOT + "/manualtest")
   public Map<String,String> addManuallyDefaultStuff() {
     accountRepository.deleteAll();
     friendRequestRepository.deleteAll();
@@ -103,7 +105,7 @@ public class AccountController {
     return Map.of("result", "success");
   }
 
-  @GetMapping("/accounts/friendrequests")
+  @GetMapping(CONTEXT_ROOT + "/friendrequests")
   public List<FriendRequest> getFReqs() {
     return friendRequestRepository.findByAcceptedFalse();
   }

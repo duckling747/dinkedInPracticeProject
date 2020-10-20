@@ -39,11 +39,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     http.headers().frameOptions().sameOrigin();
     /////////////////////////////////
     http.authorizeRequests()
-      .antMatchers("/**").permitAll()
-      .and()
-      .formLogin().permitAll()
-      .and()
-      .logout().permitAll();
+      .anyRequest().permitAll();
     
     http.formLogin()
       .loginPage("/login")

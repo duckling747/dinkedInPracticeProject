@@ -46,11 +46,11 @@ public class FriendRequest extends AbstractPersistable<Long> {
 
   private boolean accepted;
 
-  @JsonManagedReference
+  @JsonIgnoreProperties("sentFriendRequests")
   @ManyToOne
   private Account issuer;
 
-  @JsonManagedReference
+  @JsonIgnoreProperties("receivedFriendRequests")
   @ManyToOne
   private Account targetFriend;
 

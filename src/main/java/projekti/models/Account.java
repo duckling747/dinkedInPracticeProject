@@ -32,23 +32,23 @@ public class Account extends AbstractPersistable<Long> {
   private String firstName;
   private String lastName;
 
-  @JsonBackReference
+  @JsonIgnoreProperties("user")
   @OneToMany(mappedBy = "user")
   private List<Post> posts = new ArrayList<>();
 
-  @JsonBackReference
+  @JsonIgnoreProperties("issuer")
   @OneToMany(mappedBy = "issuer")
   private List<FriendRequest> sentFriendRequests = new ArrayList<>();
 
-  @JsonBackReference
+  @JsonIgnoreProperties("targetFriend")
   @OneToMany(mappedBy = "targetFriend")
   private List<FriendRequest> receivedFriendRequests = new ArrayList<>();
 
-  @JsonBackReference
+  @JsonIgnoreProperties("sender")
   @OneToMany(mappedBy = "sender")
   private List<Message> sentMessages = new ArrayList<>();
 
-  @JsonBackReference
+  @JsonIgnoreProperties("recipient")
   @OneToMany(mappedBy = "recipient")
   private List<Message> receivedMessages = new ArrayList<>();
 
