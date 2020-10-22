@@ -19,8 +19,26 @@
 
         <ul>
             <li th:each="person : ${accountPage.content}">
-                <div>
-                    <div th:text="${person.username}">username</div>
+                <div id="card">
+                    <div id="pic">
+                            <img
+                                th:if="${person.image == null}"
+                                th:src="@{/img/default-profile.png}"
+                                th:alt="|Profile picture of ${person.firstName}|"
+                            />
+                            <img
+                                th:if="${person.image != null}"
+                                alt="nondefault image"
+                            />
+                    </div>
+                    <div id="details">
+                        <div th:text="|Username: ${person.username}|">username</div>
+                        <div th:text="|First name: ${person.firstName}|">first name</div>
+                        <div th:text="|Last name: ${person.lastName}|">last name</div>
+                    </div>
+                    <button>Send friend invite</button>
+                    <button>Cancel friend invite</button>
+                    <button>Stop friendship</button>
                 </div>
             </li>
         </ul>

@@ -1,57 +1,77 @@
 package projekti.controllers;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.rmi.server.ExportException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import javax.annotation.Resource;
+import javax.tools.FileObject;
+
+import com.google.common.net.MediaType;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import projekti.models.Account;
 import projekti.models.FriendRequest;
+import projekti.models.ProfilePicture;
 import projekti.repositories.AccountRepository;
 import projekti.repositories.FriendRequestRepository;
+import projekti.repositories.ProfilePictureRepository;
+import projekti.services.AccountService;
+import projekti.services.FriendService;
+import projekti.services.ProfilePictureService;
 
 @RestController
 public class AccountController {
 
   @Autowired
-  private FriendRequestRepository friendRequestRepository;
-    
-  @Autowired
-  private AccountRepository accountRepository;
+  private AccountService accountService;
 
   @Autowired
-  private PasswordEncoder passwordEncoder;
+  private FriendService friendService;
+
+  @Autowired
+  private ProfilePictureService picService;
 
   private static final String ACCOUNTS = "/accounts";
 
   @GetMapping(ACCOUNTS)
   public List<Account> listAccounts() {
-    return accountRepository.findAll();
+    return accountService.findAll();
   }
 
   @GetMapping(ACCOUNTS + "/{id}")
   public Account getAccount(@PathVariable Long id) {
-    Optional<Account> o = accountRepository.findById(id);
-    return o.get();
+    return accountService.findById(id);
+  }
+
+  @GetMapping(path = ACCOUNTS + "/{id}/image", produces = "image/png")
+  public byte[] getProfilePic(@PathVariable Long id) throws Exception {
+    return picService.getProfilePic(id);
   }
 
   @PostMapping(ACCOUNTS)
   public Account addAccount(@RequestBody Account account) {
 
-    if (accountRepository.findByUsername(account.getUsername()) != null) {
+    if (accountService.findByUsername(account.getUsername()) != null) {
       throw new RuntimeException();
     }
-    account.setPassword(passwordEncoder.encode(account.getPassword()));
-    return accountRepository.save(account);
+    return accountService.addAccountToDB(account);
   }
 
   @GetMapping(ACCOUNTS + "/logged")
@@ -69,44 +89,38 @@ public class AccountController {
     return Map.of("username", uname);
   }
 
-  private long addAccountToDB(String uname, String fname, String lname, String pw) {
-    Account acco = new Account();
-    acco.setFirstName(fname);
-    acco.setLastName(lname);
-    acco.setPassword(passwordEncoder.encode(pw));
-    acco.setUsername(uname);
-    return accountRepository.save(acco).getId();
-  }
-
-  private long addFriendRequestToDB(String uname1, String uname2) {
-    FriendRequest f = new FriendRequest(false,
-        accountRepository.findByUsername(uname1),
-        accountRepository.findByUsername(uname2)
-    );
-    return friendRequestRepository.save(f).getId();
-  }
-
-
-
   @GetMapping(ACCOUNTS + "/manualtest")
-  public Map<String,String> addManuallyDefaultStuff() {
-    accountRepository.deleteAll();
-    friendRequestRepository.deleteAll();
-    addAccountToDB("Arnold", "b", "c", "pw");
-    addAccountToDB("Bertrand", "b", "c", "pw");
-    addAccountToDB("Bartholomew", "b", "c", "pw");
-    addAccountToDB("Christine", "b", "c", "pw");
-    addAccountToDB("Quentin", "b", "c", "pw");
-    addAccountToDB("Ruth", "b", "c", "pw");
-    addFriendRequestToDB("Arnold", "Bertrand");
-    addFriendRequestToDB("Arnold", "Bartholomew");
-    addFriendRequestToDB("Bartholomew", "Christine");
+  public Map<String,String> addManuallyDefaultStuff() throws Exception {
+    accountService.clearAccounts();
+    friendService.clearFriends();
+    accountService.addAccountToDB("Arnold", "b", "c", "pw");
+    accountService.addAccountToDB("Bertrand", "b", "c", "pw");
+    accountService.addAccountToDB("Bartholomew", "b", "c", "pw");
+    accountService.addAccountToDB("Christine", "b", "c", "pw");
+    accountService.addAccountToDB("Quentin", "b", "c", "pw");
+    accountService.addAccountToDB("Ruth", "b", "c", "pw");
+    friendService.addFriendRequestToDB("Arnold", "Bertrand");
+    friendService.addFriendRequestToDB("Arnold", "Bartholomew");
+    friendService.addFriendRequestToDB("Bartholomew", "Christine");
     return Map.of("result", "success");
+  }
+
+  @PostMapping(ACCOUNTS + "/{id}/image")
+  public Long addProfilePic(@PathVariable Long id,
+      @RequestParam("file") MultipartFile file) throws IOException {
+    final Account a = accountService.findById(id);
+    if (a == null) {
+      throw new RuntimeException();
+    }
+    ProfilePicture pp = new ProfilePicture();
+    pp.setAccount(a);
+    pp.setData(file.getBytes());
+    return picService.addProfilePicToDB(pp).getId();
   }
 
   @GetMapping(ACCOUNTS + "/friendrequests")
   public List<FriendRequest> getFReqs() {
-    return friendRequestRepository.findByAcceptedFalse();
+    return friendService.getAllFriendRequests();
   }
 
 }

@@ -5,7 +5,9 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -31,6 +33,9 @@ public class Account extends AbstractPersistable<Long> {
   private String password;
   private String firstName;
   private String lastName;
+
+  @OneToOne(mappedBy = "account")
+  private ProfilePicture image;
 
   @JsonIgnoreProperties("user")
   @OneToMany(mappedBy = "user")

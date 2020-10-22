@@ -1,3 +1,3 @@
 #!/bin/sh
 mvn compile
-mvn exec:java -Dspring.profiles.active=production -Dexec.mainClass="projekti.App"
+mvn exec:java -Dexec.mainClass="projekti.App"

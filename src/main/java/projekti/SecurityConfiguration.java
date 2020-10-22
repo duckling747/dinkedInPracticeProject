@@ -15,7 +15,6 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import projekti.services.CustomUserDetailsService;
 
-@Profile("production")
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -36,7 +35,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     // take these out when production time /////////
     http.csrf()
       .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
-    //http.csrf().disable();
+    // http.csrf().disable();
 
     http.headers().frameOptions().sameOrigin();
     /////////////////////////////////
