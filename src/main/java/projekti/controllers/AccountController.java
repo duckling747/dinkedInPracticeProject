@@ -1,23 +1,13 @@
 package projekti.controllers;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.rmi.server.ExportException;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-
-import javax.annotation.Resource;
-import javax.tools.FileObject;
-
-import com.google.common.net.MediaType;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,9 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 import projekti.models.Account;
 import projekti.models.FriendRequest;
 import projekti.models.ProfilePicture;
-import projekti.repositories.AccountRepository;
-import projekti.repositories.FriendRequestRepository;
-import projekti.repositories.ProfilePictureRepository;
 import projekti.services.AccountService;
 import projekti.services.FriendService;
 import projekti.services.ProfilePictureService;
@@ -55,16 +42,6 @@ public class AccountController {
     return accountService.findAll();
   }
 
-  @GetMapping(ACCOUNTS + "/{id}")
-  public Account getAccount(@PathVariable Long id) {
-    return accountService.findById(id);
-  }
-
-  @GetMapping(path = ACCOUNTS + "/{id}/image", produces = "image/png")
-  public byte[] getProfilePic(@PathVariable Long id) throws Exception {
-    return picService.getProfilePic(id);
-  }
-
   @PostMapping(ACCOUNTS)
   public Account addAccount(@RequestBody Account account) {
 
@@ -74,18 +51,32 @@ public class AccountController {
     return accountService.addAccountToDB(account);
   }
 
+  @GetMapping(ACCOUNTS + "/{id}")
+  public Account getAccount(@PathVariable Long id) {
+    return accountService.findById(id);
+  }
+
+  @GetMapping(path = ACCOUNTS + "/{id}/image", produces = MediaType.IMAGE_PNG_VALUE)
+  public byte[] getProfilePic(@PathVariable Long id) throws Exception {
+    return picService.getProfilePic(id);
+  }
+
+  @PostMapping(path = ACCOUNTS + "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  public Long addProfilePic(@PathVariable Long id,
+      @RequestParam("file") MultipartFile file) throws IOException {
+    final Account a = accountService.findById(id);
+    if (a == null) {
+      throw new RuntimeException();
+    }
+    ProfilePicture pp = new ProfilePicture();
+    pp.setAccount(a);
+    pp.setData(file.getBytes());
+    return picService.addProfilePicToDB(pp).getId();
+  }
+
   @GetMapping(ACCOUNTS + "/logged")
   public Map<String, String> getLogged() {
-    final Object principal = SecurityContextHolder
-        .getContext()
-        .getAuthentication()
-        .getPrincipal();
-    String uname;
-    if (principal instanceof UserDetails) {
-      uname = ((UserDetails) principal).getUsername();
-    } else {
-      uname = principal.toString();
-    }
+    final String uname = accountService.getLoggedInUser();
     return Map.of("username", uname);
   }
 
@@ -105,22 +96,16 @@ public class AccountController {
     return Map.of("result", "success");
   }
 
-  @PostMapping(ACCOUNTS + "/{id}/image")
-  public Long addProfilePic(@PathVariable Long id,
-      @RequestParam("file") MultipartFile file) throws IOException {
-    final Account a = accountService.findById(id);
-    if (a == null) {
-      throw new RuntimeException();
-    }
-    ProfilePicture pp = new ProfilePicture();
-    pp.setAccount(a);
-    pp.setData(file.getBytes());
-    return picService.addProfilePicToDB(pp).getId();
-  }
-
   @GetMapping(ACCOUNTS + "/friendrequests")
   public List<FriendRequest> getFReqs() {
     return friendService.getAllFriendRequests();
+  }
+
+  @PostMapping(path = ACCOUNTS + "/friendrequests", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public Long postFriendRequest(@RequestBody Map<String,String> json) {
+    return friendService.addFriendRequestToDB(
+        json.get("from"),
+        json.get("to"));
   }
 
 }

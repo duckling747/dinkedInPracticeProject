@@ -19,27 +19,52 @@
 
         <ul>
             <li th:each="person : ${accountPage.content}">
-                <div id="card">
-                    <div id="pic">
-                            <img
-                                th:if="${person.image == null}"
-                                th:src="@{/img/default-profile.png}"
-                                th:alt="|Profile picture of ${person.firstName}|"
-                            />
-                            <img
-                                th:if="${person.image != null}"
-                                alt="nondefault image"
-                            />
+                <a
+                    th:href="@{/wall(id=${person.id})}"
+                >
+                    <div id="card">
+                        <div id="pic">
+                                <img
+                                    th:if="${person.image == null}"
+                                    th:src="@{/img/default-profile.png}"
+                                    th:alt="|Profile picture of ${person.firstName}|"
+                                />
+                                <img
+                                    th:if="${person.image != null}"
+                                    alt="nondefault image"
+                                />
+                        </div>
+                        <div id="details">
+                            <div th:text="|Username: ${person.username}|">username</div>
+                            <div th:text="|First name: ${person.firstName}|">first name</div>
+                            <div th:text="|Last name: ${person.lastName}|">last name</div>
+                        </div>
+                        <div
+                            id="friend-buttons" 
+                            th:unless="${#strings.equals(me, person.username)}"
+                        >
+                            <button
+                                th:if="${friends.contains(person)}"
+                            >
+                                Stop friendship
+                            </button>
+                            <div 
+                                th:unless="${friends.contains(person)}"
+                            >
+                                <button
+                                    th:if="${!sent.contains(person) && !received.contains(person)}"
+                                >
+                                    Send friend invite
+                                </button>
+                                <button
+                                    th:if="${sent.contains(person)}"
+                                >
+                                    Cancel friend invite
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    <div id="details">
-                        <div th:text="|Username: ${person.username}|">username</div>
-                        <div th:text="|First name: ${person.firstName}|">first name</div>
-                        <div th:text="|Last name: ${person.lastName}|">last name</div>
-                    </div>
-                    <button>Send friend invite</button>
-                    <button>Cancel friend invite</button>
-                    <button>Stop friendship</button>
-                </div>
+                </a>
             </li>
         </ul>
 

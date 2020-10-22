@@ -27,7 +27,18 @@
                     <a th:href="@{/people}">Find people</a>
                 </p>
                 <p>
-                    <a >Learn skills</a>
+                    <a
+                        th:if="${#strings.equals(username, 'admin')}"
+                        th:href="@{/wall?id=-1}"
+                    >
+                        Secret admin wall
+                    </a>
+                    <a
+                        th:unless="${#strings.equals(username, 'admin')}"
+                        th:href="@{/wall(id=${currentUser?.id})}"
+                    >
+                        Go to your wall
+                    </a>
                 </p>
             <div>
         </section>

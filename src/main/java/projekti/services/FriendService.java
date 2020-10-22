@@ -1,6 +1,8 @@
 package projekti.services;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,8 +51,33 @@ public class FriendService {
     return friendRequestRepository.findAll();
   }
 
-  public void getPendingFriendRequests(final String uname) {
-      // do stuff
-      
+  public Set<Account> getPendingSent(final String uname) {
+    final Set<Account> sentTo = new HashSet<>();
+    final List<FriendRequest> reqs = friendRequestRepository.findSentPendingQuery(uname);
+    for (final FriendRequest req : reqs) {
+      sentTo.add(req.getTargetFriend());
+    }
+    return sentTo;
   }
+
+  public Set<Account> getPendingReceived(final String uname) {
+    final Set<Account> receivedFrom = new HashSet<>();
+    final List<FriendRequest> reqs = friendRequestRepository.findReceivedPendingQuery(uname);
+    for (final FriendRequest req : reqs) {
+      receivedFrom.add(req.getIssuer());
+    }
+    return receivedFrom;
+  }
+
+  public Set<Account> getFriends(final String uname) {
+    final Set<Account> friends = new HashSet<>();
+    final List<FriendRequest> reqs = friendRequestRepository.findFriends(uname);
+    for (final FriendRequest req : reqs) {
+      friends.add(req.getIssuer());
+      friends.add(req.getTargetFriend());
+    }
+    return friends;
+  }
+
 }
+

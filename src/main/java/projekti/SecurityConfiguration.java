@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,6 +23,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   @Autowired
   private CustomUserDetailsService userDetailsService;
 
+  @Autowired
+  private Environment env;
+
+  private boolean containsTestProfile(Environment env) {
+    for (final String p : env.getActiveProfiles()) {
+      if (p.equals("test")) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   @Override
   public void configure(final AuthenticationManagerBuilder auth) throws Exception {
     auth.inMemoryAuthentication()
@@ -32,10 +45,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   @Override
   public void configure(final HttpSecurity http) throws Exception {
-    // take these out when production time /////////
-    http.csrf()
-      .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
-    // http.csrf().disable();
+    if (containsTestProfile(env)) {
+      http.csrf().disable();
+    } else {
+      http.csrf()
+        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+      // http.csrf().disable();
+    }
 
     http.headers().frameOptions().sameOrigin();
     /////////////////////////////////

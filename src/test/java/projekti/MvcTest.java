@@ -22,7 +22,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -31,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import projekti.models.ProfilePicture;
 import projekti.repositories.AccountRepository;
 import projekti.repositories.ProfilePictureRepository;
+import projekti.services.AccountService;
 
 
 @ActiveProfiles("test")
@@ -52,6 +52,9 @@ public class MvcTest {
   @Autowired
   private ProfilePictureRepository profilePictureRepository;
 
+  @Autowired
+  private AccountService accountService;
+
   @Before
   public void reset() {
     accountRepository.deleteAll();
@@ -64,7 +67,7 @@ public class MvcTest {
         .andExpect(status().isOk());
   }
 
-  private String makeJson(String uname, String fname, String lname, String pw) {
+  private static String makeJson(String uname, String fname, String lname, String pw) {
     var json = new StringBuilder();
     json.append("{");
     json.append("\"username\": \"" + uname + "\",\n");
@@ -125,6 +128,26 @@ public class MvcTest {
     mockMvc.perform(get("/accounts/" + id + "/image"))
       .andExpect(content().contentType(MediaType.IMAGE_PNG))
       .andExpect(content().bytes(arr));
+  }
+
+  private static String makeFriendJson(String friendA, String friendB) {
+    StringBuilder json = new StringBuilder();
+    json.append("{");
+    json.append("\"from\": \"" + friendA + "\",\n");
+    json.append("\"to\": \"" + friendB + "\"\n");
+    json.append("}");
+    return json.toString();
+  }
+
+  @Test
+  public void addFriendRequestWorks() throws Exception {
+    accountService.addAccountToDB("one", "fname", "lname", "pw");
+    accountService.addAccountToDB("two", "fname", "lname", "pw");
+    String frJson = makeFriendJson("one", "two");
+    mockMvc.perform(post("/accounts/friendrequests")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(frJson)
+    ).andExpect(status().isOk());
   }
 
 
