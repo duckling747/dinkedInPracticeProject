@@ -79,5 +79,12 @@ public class FriendService {
     return friends;
   }
 
+  public Long removeFriendRequestFromDB(final String from, final String to) {
+    final Long id = friendRequestRepository.findByEitherSenderOrReceiver(from, to)
+        .get(0).getId();
+    friendRequestRepository.remove(id);
+    return id;
+  }
+
 }
 

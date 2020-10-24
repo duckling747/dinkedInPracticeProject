@@ -128,11 +128,9 @@ public class AccountTest {
     assertEquals(1L, friendRequestRepository.count());
     assertTrue(friendRequestRepository.findAll()
         .stream()
-        .anyMatch(friendreq -> friendreq.getIssuer().getUsername().equals(user1))
-    );
-    assertTrue(friendRequestRepository.findAll()
-        .stream()
-        .anyMatch(friendreq -> friendreq.getTargetFriend().getUsername().equals(user2))
+        .anyMatch(friendreq -> friendreq.getIssuer().getUsername().equals(user1)
+          && friendreq.getTargetFriend().getUsername().equals(user2)
+        )
     );
   }
 
@@ -212,6 +210,19 @@ public class AccountTest {
       assertTrue(sentPending.contains(f));
     }
 
+  }
+
+  @Test
+  public void eitherOrQueryWorks() {
+    setFriendsForTests();
+    List<FriendRequest> res = friendRequestRepository.findByEitherSenderOrReceiver("A", "B");
+    assertEquals(1, res.size());
+    FriendRequest f = res.get(0);
+    assertTrue((f.getIssuer().getUsername().equals("A")
+        && f.getTargetFriend().getUsername().equals("B"))
+            || (f.getIssuer().getUsername().equals("B")
+                && f.getTargetFriend().getUsername().equals("A"))
+    );
   }
 
 

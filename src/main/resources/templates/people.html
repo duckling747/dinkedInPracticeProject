@@ -27,11 +27,12 @@
                                 <img
                                     th:if="${person.image == null}"
                                     th:src="@{/img/default-profile.png}"
-                                    th:alt="|Profile picture of ${person.firstName}|"
+                                    alt="Default image"
                                 />
                                 <img
                                     th:if="${person.image != null}"
-                                    alt="nondefault image"
+                                    th:alt="|Profile picture of ${person.firstName}|"
+                                    th:src="${person.image}"
                                 />
                         </div>
                         <div id="details">
@@ -45,6 +46,7 @@
                         >
                             <button
                                 th:if="${friends.contains(person)}"
+                                onClick="stopFriendship()"
                             >
                                 Stop friendship
                             </button>
@@ -53,11 +55,13 @@
                             >
                                 <button
                                     th:if="${!sent.contains(person) && !received.contains(person)}"
+                                    onClick="sendFriendInvite()"
                                 >
                                     Send friend invite
                                 </button>
                                 <button
                                     th:if="${sent.contains(person)}"
+                                    onClick="cancelFriendInvite()"
                                 >
                                     Cancel friend invite
                                 </button>
@@ -80,5 +84,8 @@
         </nav>
 
         <footer th:replace="fragments/global/footer :: footer"></footer>
+
+        <script th:inline="javascript"> var contextRoot = /*[[@{/}]]*/ '';</script>
+        <script th:src="@{/js/friendButtons.js}" defer></script>
     </body>
 </html>

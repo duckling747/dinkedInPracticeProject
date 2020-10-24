@@ -1,7 +1,9 @@
 package projekti;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -29,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import projekti.models.ProfilePicture;
 import projekti.repositories.AccountRepository;
+import projekti.repositories.FriendRequestRepository;
 import projekti.repositories.ProfilePictureRepository;
 import projekti.services.AccountService;
 
@@ -54,6 +57,9 @@ public class MvcTest {
 
   @Autowired
   private AccountService accountService;
+
+  @Autowired
+  private FriendRequestRepository friendRequestRepository;
 
   @Before
   public void reset() {
@@ -89,45 +95,50 @@ public class MvcTest {
     assertNotNull(a);
   }
 
-  @Test
-  public void postImageToAccountWorks() throws Exception {
-    final String accountJson = makeJson("uname", "fname", "lname", "pw");
-    mockMvc.perform(post("/accounts")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(accountJson)
-    ).andReturn();
+  private byte[] sendTestPicture(final long id) throws Exception {
     final File image = new ClassPathResource("coupletest.png").getFile();
     assertNotNull(image);
     final byte[] arr = FileUtils.readFileToByteArray(image);
     final MockMultipartFile multipartFile
         = new MockMultipartFile("file", arr);
-    final long id = accountRepository.findByUsername("uname").getId();
     mockMvc.perform(multipart("/accounts/" + id + "/image").file(multipartFile))
       .andExpect(status().isOk());
-    List<ProfilePicture> pps = profilePictureRepository.findAll();
-    assertEquals(1, pps.size());
+    return arr;
   }
 
+  private void getTestPicture(final long id, final byte[] arr) throws Exception {
+    mockMvc.perform(get("/accounts/" + id + "/image"))
+      .andExpect(content().contentType(MediaType.IMAGE_PNG))
+      .andExpect(content().bytes(arr))
+      .andExpect(status().isOk());
+  }
 
   @Test
-  public void getImageFromAccountWorks() throws Exception {
+  public void postAndGetImageToFromAccountWorks() throws Exception {
     final String accountJson = makeJson("uname", "fname", "lname", "pw");
     mockMvc.perform(post("/accounts")
         .contentType(MediaType.APPLICATION_JSON)
         .content(accountJson)
     ).andReturn();
-    final File image = new ClassPathResource("coupletest.png").getFile();
-    final byte[] arr = FileUtils.readFileToByteArray(image);
-    final MockMultipartFile multipartFile
-        = new MockMultipartFile("file", arr);
     final long id = accountRepository.findByUsername("uname").getId();
-    mockMvc.perform(multipart("/accounts/" + id + "/image").file(multipartFile))
-      .andReturn();
+    final byte[] arr = sendTestPicture(id);
+    getTestPicture(id, arr);
     List<ProfilePicture> pps = profilePictureRepository.findAll();
-    assertEquals(1, pps.size());  
-    mockMvc.perform(get("/accounts/" + id + "/image"))
-      .andExpect(content().contentType(MediaType.IMAGE_PNG))
-      .andExpect(content().bytes(arr));
+    assertEquals(1, pps.size());
+  }
+
+  @Test
+  public void getImageTestEqualityAnotherWay() throws Exception {
+    final String accountJson = makeJson("uname", "fname", "lname", "pw");
+    mockMvc.perform(post("/accounts")
+      .contentType(MediaType.APPLICATION_JSON)
+      .content(accountJson)
+    ).andReturn();
+    final long id = accountRepository.findByUsername("uname").getId();
+    final byte[] arr = sendTestPicture(id);
+    ProfilePicture pp = profilePictureRepository.findProfilePicture(id);
+    assertNotNull(pp);
+    assertArrayEquals(arr, pp.getData());
   }
 
   private static String makeFriendJson(String friendA, String friendB) {
@@ -148,7 +159,12 @@ public class MvcTest {
         .contentType(MediaType.APPLICATION_JSON)
         .content(frJson)
     ).andExpect(status().isOk());
+    assertTrue(friendRequestRepository.findAll()
+        .stream()
+        .anyMatch(friendreq -> friendreq.getIssuer().getUsername().equals("one")
+          && friendreq.getTargetFriend().getUsername().equals("two")
+        )
+    );
   }
-
 
 }

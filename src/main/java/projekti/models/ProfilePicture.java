@@ -6,11 +6,11 @@ import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 
-import org.springframework.data.jpa.domain.AbstractPersistable;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import org.springframework.data.jpa.domain.AbstractPersistable;
 
 @Entity
 @AllArgsConstructor

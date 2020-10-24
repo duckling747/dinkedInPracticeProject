@@ -16,10 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import projekti.models.Account;
-import projekti.models.FriendRequest;
 import projekti.models.ProfilePicture;
 import projekti.repositories.AccountRepository;
-import projekti.repositories.FriendRequestRepository;
 import projekti.repositories.ProfilePictureRepository;
 
 @Transactional
