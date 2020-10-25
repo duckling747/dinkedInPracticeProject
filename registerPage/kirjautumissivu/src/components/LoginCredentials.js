@@ -62,7 +62,10 @@ export function LoginCredentials() {
       .split('; ')
       .find(r => r.startsWith('XSRF-TOKEN'))
       .split('=')[1];
-    if (cookieVal) window.location.href = "/";
+    if (!cookieVal) {
+      alert("Session cookie not found");
+      window.location.href = "/";
+    }
 
     const response = await fetch(url, {
       method: 'POST',

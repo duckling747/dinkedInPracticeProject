@@ -1,17 +1,29 @@
 
 const url = contextRoot + "accounts/friendrequests";
 
+const cookieVal = document.cookie
+.split('; ')
+.find(r => r.startsWith('XSRF-TOKEN'))
+.split('=')[1];
+
 function sendJson(successMessage, failMessage, operation, data) {
+    console.log("data", data);
+    if (!cookieVal) {
+        alert("Session cookie not found!");
+    }
     fetch(url, {
         method: operation,
         body: JSON.stringify(data),
         headers: {
-            "Content-Type": "application/json"
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'X-XSRF-TOKEN': cookieVal
         }
     })
     .then(response => {
         if (response.ok) {
             alert(successMessage);
+            location.reload();
         } else {
             alert(failMessage);
         }
@@ -33,3 +45,7 @@ function sendFriendInvite(from, to) {
         "POST",
         { to, from });
 };
+
+function test() {
+    console.log("test");
+}

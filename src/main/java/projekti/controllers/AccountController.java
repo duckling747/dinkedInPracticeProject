@@ -4,11 +4,13 @@ import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +28,7 @@ import projekti.services.FriendService;
 import projekti.services.ProfilePictureService;
 
 @RestController
+@CrossOrigin(origins = {"http://localhost:8080", "http://localhost:3000"})
 public class AccountController {
 
   @Autowired
@@ -95,14 +98,18 @@ public class AccountController {
     friendService.addFriendRequestToDB("Arnold", "Bertrand");
     friendService.addFriendRequestToDB("Arnold", "Bartholomew");
     friendService.addFriendRequestToDB("Bartholomew", "Christine");
-    final LinkedHashSet<Account> christineRec = (LinkedHashSet)friendService.getPendingReceived("Christine");
-    //christineRec.
+    friendService.acceptFriendship("Bartholomew", "Christine");
     return Map.of("result", "success");
   }
 
   @GetMapping(ACCOUNTS + "/friendrequests")
   public List<FriendRequest> getFReqs() {
     return friendService.getAllFriendRequests();
+  }
+
+  @GetMapping(ACCOUNTS + "/{id}/friendrequests")
+  public List<FriendRequest> getUsersFReqs(@PathVariable Long id) {
+    return friendService.getUsersPendingRequests(id);
   }
 
   @PostMapping(path = ACCOUNTS + "/friendrequests", consumes = MediaType.APPLICATION_JSON_VALUE)

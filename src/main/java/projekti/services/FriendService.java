@@ -2,6 +2,7 @@ package projekti.services;
 
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,12 @@ public class FriendService {
 
   public List<FriendRequest> getAllFriendRequests() {
     return friendRequestRepository.findAll();
+  }
+
+  public List<FriendRequest> getUsersPendingRequests(final Long id) {
+    final Optional<Account> res = accountRepo.findById(id);
+    final String username = res.get().getUsername();
+    return friendRequestRepository.findReceivedPendingQuery(username);
   }
 
   public Set<Account> getPendingSent(final String uname) {

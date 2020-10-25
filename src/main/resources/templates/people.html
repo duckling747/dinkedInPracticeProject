@@ -19,10 +19,10 @@
 
         <ul>
             <li th:each="person : ${accountPage.content}">
-                <a
-                    th:href="@{/wall(id=${person.id})}"
-                >
-                    <div id="card">
+                <div id="card">
+                    <a
+                        th:href="@{/wall(id=${person.id})}"
+                    >
                         <div id="pic">
                                 <img
                                     th:if="${person.image == null}"
@@ -40,35 +40,38 @@
                             <div th:text="|First name: ${person.firstName}|">first name</div>
                             <div th:text="|Last name: ${person.lastName}|">last name</div>
                         </div>
-                        <div
-                            id="friend-buttons" 
-                            th:unless="${#strings.equals(me, person.username)}"
+                    </a>
+                    <div
+                        id="friend-buttons" 
+                        th:unless="${#strings.equals(me, person.username)}"
+                    >
+                        <button
+                            type="button"
+                            th:if="${friends.contains(person)}"
+                            th:onclick="stopFriendship([[${me}]], [[${person.username}]]);"
+                        >
+                            Stop friendship
+                        </button>
+                        <div 
+                            th:unless="${friends.contains(person)}"
                         >
                             <button
-                                th:if="${friends.contains(person)}"
-                                onClick="stopFriendship()"
+                                type="button"
+                                th:if="${!sent.contains(person) && !received.contains(person)}"
+                                th:onclick="sendFriendInvite([[${me}]], [[${person.username}]]);"
                             >
-                                Stop friendship
+                                Send friend invite
                             </button>
-                            <div 
-                                th:unless="${friends.contains(person)}"
+                            <button
+                                type="button"
+                                th:if="${sent.contains(person)}"
+                                th:onclick="cancelFriendInvite([[${me}]], [[${person.username}]]);"
                             >
-                                <button
-                                    th:if="${!sent.contains(person) && !received.contains(person)}"
-                                    onClick="sendFriendInvite()"
-                                >
-                                    Send friend invite
-                                </button>
-                                <button
-                                    th:if="${sent.contains(person)}"
-                                    onClick="cancelFriendInvite()"
-                                >
-                                    Cancel friend invite
-                                </button>
-                            </div>
+                                Cancel friend invite
+                            </button>
                         </div>
                     </div>
-                </a>
+                </div>
             </li>
         </ul>
 
