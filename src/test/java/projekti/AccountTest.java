@@ -213,17 +213,39 @@ public class AccountTest {
   }
 
   @Test
-  public void eitherOrQueryWorks() {
+  public void eitherOrQueryWorks1() {
     setFriendsForTests();
     List<FriendRequest> res = friendRequestRepository.findByEitherSenderOrReceiver("A", "B");
     assertEquals(1, res.size());
     FriendRequest f = res.get(0);
     assertTrue((f.getIssuer().getUsername().equals("A")
         && f.getTargetFriend().getUsername().equals("B"))
-            || (f.getIssuer().getUsername().equals("B")
-                && f.getTargetFriend().getUsername().equals("A"))
     );
   }
 
+  @Test
+  public void eitherOrQueryWorks2() {
+    setFriendsForTests();
+    List<FriendRequest> res = friendRequestRepository.findByEitherSenderOrReceiver("B", "A");
+    assertEquals(1, res.size());
+    FriendRequest f = res.get(0);
+    assertTrue((f.getIssuer().getUsername().equals("A")
+        && f.getTargetFriend().getUsername().equals("B"))
+    );
+  }
+
+  @Test
+  public void deleteFriendQueryWorks() {
+    setFriendsForTests();
+    List<FriendRequest> res = friendRequestRepository.findAll();
+    assertEquals(4, res.size());
+    final long removeMeId = res.get(R.nextInt(res.size())).getId();
+    friendRequestRepository.remove(removeMeId);
+    res = friendRequestRepository.findAll();
+    assertEquals(3, res.size());
+    assertFalse(
+        res.stream().anyMatch(f -> f.getId() == removeMeId)
+    );
+  }
 
 }

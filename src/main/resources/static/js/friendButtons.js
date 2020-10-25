@@ -19,11 +19,11 @@ function sendJson(successMessage, failMessage, operation, data) {
 };
 
 function stopFriendship(from, to) {
-    sendJson("Friendship stopped!", "Fail", "DELETE", { to, from })
+    sendJson("Friendship stopped!", "Fail", "DELETE", { to, from });
 };
 
 function cancelFriendInvite(from, to) {
-    sendJson("Friendrequest canceled!", "Fail", "DELETE", { to, from })
+    sendJson("Friendrequest canceled!", "Fail", "DELETE", { to, from });
 };
 
 function sendFriendInvite(from, to) {
@@ -31,5 +31,5 @@ function sendFriendInvite(from, to) {
         "Friendrequest sent!",
         "Something went wrong with sending friendrequest :(",
         "POST",
-        { to, from })
+        { to, from });
 };

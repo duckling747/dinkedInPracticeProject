@@ -9,7 +9,7 @@ import projekti.models.ProfilePicture;
 public interface ProfilePictureRepository extends JpaRepository<ProfilePicture, Long> {
 
   public static final String getProfilePictureQuery
-      = "SELECT new projekti.models.ProfilePicture(p.account, p.data) "
+      = "SELECT p "
       + "FROM ProfilePicture p JOIN Account a "
       + "ON a.id = p.account "
       + "WHERE a.id = :id";

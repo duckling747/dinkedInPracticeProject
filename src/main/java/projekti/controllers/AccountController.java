@@ -1,6 +1,7 @@
 package projekti.controllers;
 
 import java.io.IOException;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -81,8 +82,8 @@ public class AccountController {
     return Map.of("username", uname);
   }
 
-  @GetMapping(ACCOUNTS + "/manualtest")
-  public Map<String,String> addManuallyDefaultStuff() throws Exception {
+  @GetMapping(ACCOUNTS + "/test")
+  public Map<String,String> testingRouteSetUp() throws Exception {
     accountService.clearAccounts();
     friendService.clearFriends();
     accountService.addAccountToDB("Arnold", "b", "c", "pw");
@@ -94,6 +95,8 @@ public class AccountController {
     friendService.addFriendRequestToDB("Arnold", "Bertrand");
     friendService.addFriendRequestToDB("Arnold", "Bartholomew");
     friendService.addFriendRequestToDB("Bartholomew", "Christine");
+    final LinkedHashSet<Account> christineRec = (LinkedHashSet)friendService.getPendingReceived("Christine");
+    //christineRec.
     return Map.of("result", "success");
   }
 

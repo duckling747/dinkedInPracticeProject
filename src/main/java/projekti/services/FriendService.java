@@ -1,6 +1,6 @@
 package projekti.services;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -32,10 +32,13 @@ public class FriendService {
   }
 
 
-  public long addFriendRequestToDB(String uname1, String uname2) {
+  public long addFriendRequestToDB(final String from, final String to) {
+    if (friendRequestRepository.findByEitherSenderOrReceiver(from, to).size() > 0) {
+      throw new IllegalStateException();
+    }
     FriendRequest f = new FriendRequest(false,
-        accountRepo.findByUsername(uname1),
-        accountRepo.findByUsername(uname2)
+        accountRepo.findByUsername(from),
+        accountRepo.findByUsername(to)
     );
     return friendRequestRepository.save(f).getId();
   }
@@ -52,7 +55,7 @@ public class FriendService {
   }
 
   public Set<Account> getPendingSent(final String uname) {
-    final Set<Account> sentTo = new HashSet<>();
+    final Set<Account> sentTo = new LinkedHashSet<>();
     final List<FriendRequest> reqs = friendRequestRepository.findSentPendingQuery(uname);
     for (final FriendRequest req : reqs) {
       sentTo.add(req.getTargetFriend());
@@ -61,7 +64,7 @@ public class FriendService {
   }
 
   public Set<Account> getPendingReceived(final String uname) {
-    final Set<Account> receivedFrom = new HashSet<>();
+    final Set<Account> receivedFrom = new LinkedHashSet<>();
     final List<FriendRequest> reqs = friendRequestRepository.findReceivedPendingQuery(uname);
     for (final FriendRequest req : reqs) {
       receivedFrom.add(req.getIssuer());
@@ -70,7 +73,7 @@ public class FriendService {
   }
 
   public Set<Account> getFriends(final String uname) {
-    final Set<Account> friends = new HashSet<>();
+    final Set<Account> friends = new LinkedHashSet<>();
     final List<FriendRequest> reqs = friendRequestRepository.findFriends(uname);
     for (final FriendRequest req : reqs) {
       friends.add(req.getIssuer());
@@ -79,10 +82,22 @@ public class FriendService {
     return friends;
   }
 
-  public Long removeFriendRequestFromDB(final String from, final String to) {
-    final Long id = friendRequestRepository.findByEitherSenderOrReceiver(from, to)
-        .get(0).getId();
+  public long removeFriendRequestFromDB(final String from, final String to) {
+    final List<FriendRequest> reqs = friendRequestRepository.findByEitherSenderOrReceiver(from, to);
+    assert reqs.size() == 1;
+    final long id = reqs.get(0).getId();
     friendRequestRepository.remove(id);
+    return id;
+  }
+
+  public long acceptFriendship(final String from, final String to) {
+    final List<FriendRequest> reqs = friendRequestRepository.findByEitherSenderOrReceiver(from, to);
+    assert reqs.size() == 1;
+    final FriendRequest req = reqs.get(0);
+    assert req.getIssuer().getUsername().equals(from)
+      && req.getTargetFriend().getUsername().equals(to);
+    final long id = req.getId();
+    friendRequestRepository.acceptFriendrequest(id);
     return id;
   }
 

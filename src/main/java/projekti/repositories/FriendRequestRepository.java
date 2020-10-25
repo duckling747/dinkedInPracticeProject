@@ -3,22 +3,21 @@ package projekti.repositories;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import projekti.models.FriendRequest;
-import projekti.models.Account;
 
 public interface FriendRequestRepository extends JpaRepository<FriendRequest, Long> {
-    
-  List<FriendRequest> findAll();
 
   List<FriendRequest> findByAcceptedTrue();
 
   List<FriendRequest> findByAcceptedFalse();
 
   public static final String sentPendingQuery
-      = "SELECT new projekti.models.FriendRequest(f.accepted, f.issuer, f.targetFriend) "
+      = "SELECT f "
       + "FROM FriendRequest f JOIN Account a "
       + "ON a.id = f.issuer "
       + "WHERE f.accepted = false "
@@ -28,7 +27,7 @@ public interface FriendRequestRepository extends JpaRepository<FriendRequest, Lo
   List<FriendRequest> findSentPendingQuery(@Param("uname") String uname);
 
   public static final String receivedPendingQuery
-      = "SELECT new projekti.models.FriendRequest(f.accepted, f.issuer, f.targetFriend) "
+      = "SELECT f "
       + "FROM FriendRequest f JOIN Account a "
       + "ON a.id = f.targetFriend "
       + "WHERE f.accepted = false "
@@ -38,7 +37,7 @@ public interface FriendRequestRepository extends JpaRepository<FriendRequest, Lo
   List<FriendRequest> findReceivedPendingQuery(@Param("uname") String uname);
 
   public static final String friendsQuery
-      = "SELECT new projekti.models.FriendRequest(f.accepted, f.issuer, f.targetFriend) "
+      = "SELECT f "
       + "FROM FriendRequest f JOIN Account a "
       + "ON a.id = f.targetFriend OR a.id = f.issuer "
       + "WHERE f.accepted = true "
@@ -47,20 +46,14 @@ public interface FriendRequestRepository extends JpaRepository<FriendRequest, Lo
   @Query(friendsQuery)
   List<FriendRequest> findFriends(@Param("uname") String uname);
 
-  // TODO: make working query
   public static final String eitherOrQuery
-        = "SELECT new projekti.models.FriendRequest(f.accepted, f.issuer, f.targetFriend) "
+        = "SELECT DISTINCT f "
         + "FROM FriendRequest f JOIN Account a "
-        + "ON a.id = f.targetFriend OR a.id = f.issuer "
-        + "WHERE a.id IN "
-        + "(SELECT suba.id "
-        + "FROM Account suba JOIN Account subb "
-        + "WHERE (suba.username = :from AND subb.username = :to) "
-        + "OR (subb.username = :from AND suba.username = :to)) "
-        + "OR a.id IN (SELECT subb.id "
-        + "FROM Account suba JOIN Account subb "
-        + "WHERE (suba.username = :from AND subb.username = :to) "
-        + "OR (subb.username = :from AND suba.username = :to))";
+        + "ON f.issuer = a.id OR f.targetFriend = a.id "
+        + "JOIN Account b "
+        + "ON f.issuer = b.id OR f.targetFriend = b.id "
+        + "WHERE (a.username = :from AND b.username = :to) "
+        + "OR (a.username = :to AND b.username = :from)";
 
   @Query(eitherOrQuery)
   List<FriendRequest> findByEitherSenderOrReceiver(
@@ -71,7 +64,19 @@ public interface FriendRequestRepository extends JpaRepository<FriendRequest, Lo
         + "FROM FriendRequest f "
         + "WHERE f.id = :id";
 
+  @Transactional
+  @Modifying
   @Query(deleteQuery)
   void remove(@Param("id") Long id);
 
+  public static final String acceptFriendshipQuery
+        = "UPDATE FriendRequest f "
+        + "SET accepted = true "
+        + "WHERE f.id = :id";
+
+  @Transactional
+  @Modifying
+  @Query(acceptFriendshipQuery)
+  void acceptFriendrequest(@Param("id") Long id);
+    
 }

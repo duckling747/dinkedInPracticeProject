@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -154,17 +155,37 @@ public class MvcTest {
   public void addFriendRequestWorks() throws Exception {
     accountService.addAccountToDB("one", "fname", "lname", "pw");
     accountService.addAccountToDB("two", "fname", "lname", "pw");
-    String frJson = makeFriendJson("one", "two");
+    final String frJson = makeFriendJson("one", "two");
     mockMvc.perform(post("/accounts/friendrequests")
         .contentType(MediaType.APPLICATION_JSON)
         .content(frJson)
     ).andExpect(status().isOk());
-    assertTrue(friendRequestRepository.findAll()
+    var res = friendRequestRepository.findAll();
+    assertEquals(1, res.size());
+    assertTrue(res
         .stream()
         .anyMatch(friendreq -> friendreq.getIssuer().getUsername().equals("one")
           && friendreq.getTargetFriend().getUsername().equals("two")
         )
     );
+  }
+
+  @Test
+  public void deleteFriendRequestWorks() throws Exception {
+    accountService.addAccountToDB("one", "fname", "lname", "pw");
+    accountService.addAccountToDB("two", "fname", "lname", "pw");
+    final String frJson = makeFriendJson("one", "two");
+    mockMvc.perform(post("/accounts/friendrequests")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(frJson)
+    ).andExpect(status().isOk());
+    assertEquals(1, friendRequestRepository.findAll().size());
+    assertEquals(1, friendRequestRepository.findByEitherSenderOrReceiver("one", "two").size());
+    mockMvc.perform(delete("/accounts/friendrequests")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(frJson)
+    ).andExpect(status().isOk());
+    assertTrue(friendRequestRepository.findAll().isEmpty());
   }
 
 }
