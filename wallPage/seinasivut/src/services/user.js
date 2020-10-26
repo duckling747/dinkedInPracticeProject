@@ -4,6 +4,16 @@ const cookieVal = document.cookie
       .find(r => r.startsWith('XSRF-TOKEN'))
       .split('=')[1];
 
+export const postLogout = async () => {
+    const res = await fetch("/logout", {
+        method: "POST",
+        headers: {
+            'X-XSRF-TOKEN': cookieVal
+        }
+    });
+    return res.json();
+};
+
 export const getUserWithId = async (id) => {
     const res = await fetch(`/accounts/${id}`);
     return res.json();

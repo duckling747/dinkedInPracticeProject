@@ -1,7 +1,7 @@
 import React from "react";
 import dinkedin from "../img/logo.png";
 import "./NavBar.css";
-
+import { postLogout } from "../services/user";
 
 const searchForPostsHandler = (event) => {
     event.preventDefault();
@@ -13,11 +13,23 @@ const NavBar = (props) => {
 
     const { username, current } = props;
 
+    const submitLogout = (event) => {
+        event.preventDefault();
+        postLogout()
+            .then(res => {
+                if(res.ok) {
+                    window.location.href = "/login?logout";
+                } else {
+                    alert("Error logging out!");
+                }
+            });
+    };
+
     const showButtons =
         username === current
         ?
         <div>
-            <form action="/logout" method="POST">
+            <form onSubmit={event => submitLogout(event)}>
                 <button id="logoutbutton" type="submit">
                     Logout
                 </button>
