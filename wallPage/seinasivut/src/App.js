@@ -4,7 +4,7 @@ import NavBar from './components/NavBar';
 import PendingFriendRequests from './components/PendingFriendRequests';
 import Posts from './components/Posts';
 import WritePostBox from './components/WritePostBox';
-import { getCurrentUser, getUserWithId } from './services/user';
+import { getCurrentUser, getPendingFriendRequests, getUserAndFriendsPosts, getUserWithId } from './services/user';
 
 const App = () => {
 
@@ -14,15 +14,34 @@ const App = () => {
   const [userOfWall, setUserOfWall] = useState({});
   const [currentUser, setCurrentUser] = useState("");
   const [filter, setFilter] = useState("");
+  const [pendingList, setPendingList] = useState([]);
+  const [posts, setPosts] = useState([]);
+
+  console.log("userid", userId);
 
 
-  
+  const refetchFriendReqs = async () => {
+    const friendReqs = await getPendingFriendRequests(userId);
+    console.log("pending reqs:", friendReqs);
+    setPendingList([...friendReqs]);
+  };
+
+  const refetchPosts = async () => {
+    const posts = await getUserAndFriendsPosts(userId);
+    console.log("posts:", posts);
+    setPosts([...posts]);
+  };
+
   useEffect(() => {
     getUserWithId(userId)
       .then(bod => setUserOfWall(bod));
     getCurrentUser()
         .then(bod => setCurrentUser(bod));
-}, []);
+    getPendingFriendRequests(userId)
+      .then(bod => setPendingList([...bod]));
+    getUserAndFriendsPosts(userId)
+      .then(bod => setPosts([...bod]));
+}, [userId]);
 
   if (!userOfWall.username) return null;
 
@@ -37,12 +56,17 @@ const App = () => {
       <h2>{`Wall of ${userOfWall.username}`}</h2>
       
       <PendingFriendRequests
-        id={userId}
+        refetchFriendReqs={refetchFriendReqs}
+        refetchPosts={refetchPosts}
+        pendingList={pendingList}
         username={userOfWall.username}
         current={currentUser.username}
       />
 
-      <Posts userId={userId} filter={filter} />
+      <Posts userId={userId}
+        filter={filter}
+        posts={posts}
+      />
 
       <WritePostBox />
 

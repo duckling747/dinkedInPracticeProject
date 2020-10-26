@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { deleteRejectFriendship, getPendingFriendRequests, putAcceptFriendship } from "../services/user";
+import React from "react";
+import { deleteRejectFriendship, putAcceptFriendship } from "../services/user";
 import "./PendingFriendRequests.css";
 
 
@@ -7,34 +7,24 @@ import "./PendingFriendRequests.css";
 
 const PendingFriendRequests = (props) => {
 
-    const { id, username, current } = props;
+    const { username, current, pendingList, refetchFriendReqs, refetchPosts } = props;
 
-    const [pendingList, setPendingList] = useState([]);
 
-    useEffect(() => {
-        getPendingFriendRequests(id)
-            .then(bod => {
-                console.log("pending reqs:", bod);
-                setPendingList(bod);
-            });
-    }, []);
-
-    const acceptFriend = (friend) => {
+    const acceptFriend = async (friend) => {
         const r = confirm(`Are you sure you want to accept the friendship of ${friend}?`)
         if (!r) return;
-        putAcceptFriendship(current, friend)
-            .then(bod => {
-                console.log(bod);
-            });
+        const bod = await putAcceptFriendship(current, friend);
+        console.log(bod)
+        refetchFriendReqs();
+        refetchPosts();
     };
     
-    const rejectFriend = (friend) => {
+    const rejectFriend = async (friend) => {
         const r = confirm(`Are you sure you want to reject the friendship of ${friend}?`)
         if (!r) return;
-        deleteRejectFriendship(current, friend)
-            .then(bod => {
-                console.log(bod);
-            });
+        const bod = await deleteRejectFriendship(current, friend);
+        console.log(bod);
+        refetchFriendReqs();
     };
     
     

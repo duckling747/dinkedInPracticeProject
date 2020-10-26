@@ -1,26 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { getUserAndFriendsPosts } from "../services/user";
+import React from "react";
 
 const Posts = (props) => {
 
-    const { userId, filter } = props;
+    const { filter, posts } = props;
 
-    const [postsList, setPostsList] = useState([]);
+    if (!posts || posts.length < 1) return <section>
+        No posts yet...
+    </section>;
 
-    useEffect(() => {
-        getUserAndFriendsPosts(userId)
-            .then(bod => setPostsList(bod));
-    }, []);
-
-    if (!postsList || postsList.length < 1) return null;
-
-    console.log(postsList);
+    console.log("postsList in Posts", posts);
 
     return <section>
         <h3>Posts</h3>
         <ul>
             {
-                postsList
+                posts
                     .filter(p => p.post.toLowerCase().includes(filter.toLowerCase())
                         || p.user.username.toLowerCase().includes(filter.toLowerCase())
                     )

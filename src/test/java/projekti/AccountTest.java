@@ -1,11 +1,13 @@
 package projekti;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.charset.Charset;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 
@@ -22,8 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import projekti.models.Account;
 import projekti.models.FriendRequest;
+import projekti.models.Post;
 import projekti.repositories.AccountRepository;
 import projekti.repositories.FriendRequestRepository;
+import projekti.repositories.PostRepository;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
@@ -39,6 +43,9 @@ public class AccountTest {
 
   @Autowired
   private PasswordEncoder passwordEncoder;
+
+  @Autowired
+  private PostRepository postRepository;
 
   public static Random R = new Random();
 
@@ -142,7 +149,10 @@ public class AccountTest {
     addFriendRequestToDB(a, b);
     addFriendRequestToDB(b, c);
     addFriendRequestToDB(a, c);
-    addFriendRequestToDB(c, d);
+    final long fr = addFriendRequestToDB(c, d);
+    final FriendRequest f = friendRequestRepository.getOne(fr);
+    f.setAccepted(true);
+    friendRequestRepository.save(f);
   }
 
   @Test
@@ -245,6 +255,91 @@ public class AccountTest {
     assertEquals(3, res.size());
     assertFalse(
         res.stream().anyMatch(f -> f.getId() == removeMeId)
+    );
+  }
+
+  private void makePosts() {
+    final Account a = accountRepository.findByUsername("A");
+    final Post p = new Post();
+    p.setUser(a);
+    p.setTimestamp(LocalDateTime.now());
+    final String posting = "apost";
+    p.setPost(posting);
+    postRepository.save(p);
+    
+    final Account b = accountRepository.findByUsername("B");
+    final Post pb = new Post();
+    pb.setUser(b);
+    pb.setTimestamp(LocalDateTime.now());
+    final String postingb = "bpost";
+    pb.setPost(postingb);
+    postRepository.save(pb);
+    
+    final Post pb2 = new Post();
+    pb2.setUser(b);
+    pb2.setTimestamp(LocalDateTime.now());
+    final String postingb2 = "bpost2";
+    pb2.setPost(postingb2);
+    postRepository.save(pb2);
+    
+    final Account c = accountRepository.findByUsername("C");
+    final Post pc = new Post();
+    pc.setUser(c);
+    pc.setTimestamp(LocalDateTime.now());
+    final String postingc = "cpost";
+    pc.setPost(postingc);
+    postRepository.save(pc);
+
+    final Account d = accountRepository.findByUsername("D");
+    final Post pd = new Post();
+    pd.setUser(d);
+    pd.setTimestamp(LocalDateTime.now());
+    final String postingd = "dpost";
+    pd.setPost(postingd);
+    postRepository.save(pd);
+  }
+
+  @Test
+  public void postQueryWorks1() {
+    setFriendsForTests();
+    makePosts();
+    final Account a = accountRepository.findByUsername("A");
+    var posts = postRepository.findAllUsersAndFriendsPosts(a.getId());
+    assertEquals(1, posts.size());
+    assertEquals("apost", posts.get(0).getPost());
+  }
+
+  @Test
+  public void postQueryWorks2() {
+    setFriendsForTests();
+    makePosts();
+    final Account b = accountRepository.findByUsername("B");
+    var posts = postRepository.findAllUsersAndFriendsPosts(b.getId());
+    assertEquals(2, posts.size());
+    assertTrue(
+        posts.stream()
+        .anyMatch(p -> p.getPost().equals("bpost"))
+    );
+    assertTrue(
+        posts.stream()
+        .anyMatch(p -> p.getPost().equals("bpost2"))
+    );
+  }
+
+  @Test
+  public void postQueryWorks3() {
+    setFriendsForTests();
+    makePosts();
+    final Account c = accountRepository.findByUsername("C");
+    var posts = postRepository.findAllUsersAndFriendsPosts(c.getId());
+    assertEquals(2, posts.size());
+    assertTrue(
+        posts.stream()
+        .anyMatch(p -> p.getPost().equals("cpost"))
+    );
+    assertTrue(
+        posts.stream()
+        .anyMatch(p -> p.getPost().equals("dpost"))
     );
   }
 
