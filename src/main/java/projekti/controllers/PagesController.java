@@ -81,6 +81,7 @@ public class PagesController {
     final Set<Account> sent = friendService.getPendingSent(uname);
     final Set<Account> received = friendService.getPendingReceived(uname);
     model.addAttribute("me", uname);
+    model.addAttribute("username", uname);
     model.addAttribute("friends", friends);
     model.addAttribute("sent", sent);
     model.addAttribute("received", received);

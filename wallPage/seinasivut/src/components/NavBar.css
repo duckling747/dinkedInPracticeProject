@@ -1,3 +1,52 @@
 nav {
+    width: 100%;
     background-color: lightblue;
+    display: inline-block;
+    line-height: 50px;
+}
+
+nav div {
+    float: left;
+    overflow: hidden;
+}
+
+nav img {
+    vertical-align: middle;
+    position: relative;
+    margin-left: 10px;
+}
+
+nav input {
+    vertical-align: middle;
+    position: relative;
+}
+
+div#authlinks {
+    float: right;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+div#filter {
+    float: left;
+    vertical-align: middle;
+    position: relative;
+    margin-right: 10px;
+}
+
+div#authlinks a:link {
+    font-family: arial, sans-serif;
+    color: #069;
+    font-size: small;
+}
+
+nav form button {
+    background: none!important;
+    border: none;
+    padding: 0!important;
+    font-family: arial, sans-serif;
+    color: #069;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: small;
 }

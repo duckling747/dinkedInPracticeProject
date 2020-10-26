@@ -8,11 +8,7 @@
         <link th:href="@{/css/people.css}" rel="stylesheet" />
     </head>
     <body>
-        <nav>
-            <div th:replace="fragments/global/header :: header">
-            </div>
-            <div th:replace="fragments/global/navbar :: authlinks">
-            </div>
+        <nav th:replace="fragments/global/navbar :: nav">
         </nav>
 
         <h2>Find people</h2>

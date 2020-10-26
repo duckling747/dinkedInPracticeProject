@@ -74,7 +74,6 @@ export function LoginCredentials() {
         'Content-Type': 'application/json',
         'X-XSRF-TOKEN': cookieVal
       },
-      redirect: 'follow',
       body: JSON.stringify({
         username: uname,
         password: pw,
@@ -83,10 +82,25 @@ export function LoginCredentials() {
       })
     });
     console.log("Sent data...", response);
-    if (response.status === 200)
-      window.setTimeout(() => {
-        window.location.href = "/";
-      }, 2000);
+    if (response.ok)
+      window.setTimeout( async () => {
+        const data = new URLSearchParams();
+        data.append("username", uname);
+        data.append("password", pw);
+        const res = await fetch("/login", {
+          method: "POST",
+          headers: {
+            'X-XSRF-TOKEN': cookieVal,
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: data
+        })
+        if (!res.ok) {
+          alert("Error logging in!");
+        } else {
+          window.location.href = "/";
+        }
+      }, 1000);
     else
       console.error("error sending data");
   }

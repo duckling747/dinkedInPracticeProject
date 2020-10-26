@@ -9,6 +9,10 @@
         <nav th:fragment="navbar">
             <div th:replace="fragments/global/header :: header">
             </div>
+            <div>
+                <div sec:authorize="isAuthenticated()" th:text="|<Logged in as: ${username}>|">
+                </div>
+            </div>
             <div th:fragment="authlinks" id="authlinks">
                 <a sec:authorize="!isAuthenticated()" th:href="@{/join}">Join now</a>
                 <a id="loginbutton"

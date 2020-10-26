@@ -7,11 +7,7 @@
         <link th:insert="fragments/global/navbar :: navbar-css" />
     </head>
     <body>
-        <nav>
-            <div th:replace="fragments/global/header :: header">
-            </div>
-            <div th:replace="fragments/global/navbar :: authlinks">
-            </div>
+        <nav th:replace="fragments/global/navbar :: nav">
         </nav>
 
         <h2>Settings</h2>
