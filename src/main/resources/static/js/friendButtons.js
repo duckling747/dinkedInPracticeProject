@@ -10,6 +10,7 @@ function sendJson(successMessage, failMessage, operation, data) {
     console.log("data", data);
     if (!cookieVal) {
         alert("Session cookie not found!");
+        return;
     }
     fetch(url, {
         method: operation,
@@ -31,16 +32,22 @@ function sendJson(successMessage, failMessage, operation, data) {
 };
 
 function stopFriendship(from, to) {
+    const r = confirm("Stop this friendship?");
+    if (!r) return;
     sendJson("Friendship stopped!", "Fail", "DELETE", { to, from });
 };
 
 function cancelFriendInvite(from, to) {
-    sendJson("Friendrequest canceled!", "Fail", "DELETE", { to, from });
+    const r = confirm("Cancel this friend invite?");
+    if (!r) return;
+    sendJson("Friend invite canceled!", "Fail", "DELETE", { to, from });
 };
 
 function sendFriendInvite(from, to) {
+    const r = confirm("Send friend invite?");
+    if (!r) return;
     sendJson(
-        "Friendrequest sent!",
+        "Friend invite sent!",
         "Something went wrong with sending friendrequest :(",
         "POST",
         { to, from });

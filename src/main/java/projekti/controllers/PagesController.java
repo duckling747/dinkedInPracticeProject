@@ -35,9 +35,13 @@ public class PagesController {
     return "index";
   }
 
-  @GetMapping("/jobs")
-  public String jobs() {
-    return "jobs";
+  @GetMapping("/settings")
+  public String settings(final Model model) {
+    final String uname = accountService.getLoggedInUser();
+    final Account a = accountService.findByUsername(uname);
+    model.addAttribute("username", uname);
+    model.addAttribute("currentUser", a);
+    return "settings";
   }
 
   @GetMapping("/join")
@@ -51,16 +55,15 @@ public class PagesController {
   }
 
   @GetMapping("/wall")
-  public String userWall(
-      final Model model) {
-    return "wall";
+  public String userWall(@RequestParam Long id) {
+    return "redirect:/wall/index.html?id=" + id;
   }
 
   @GetMapping("/people")
   public String findPeople(
       final Model model,
       @RequestParam(defaultValue = "0") final Integer page,
-      @RequestParam(defaultValue = "5") final Integer size) {
+      @RequestParam(defaultValue = "2") final Integer size) {
 
     final Page<Account> accountPage = accountService
         .findPaginated(PageRequest.of(page, size));

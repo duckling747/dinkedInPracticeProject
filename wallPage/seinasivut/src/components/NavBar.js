@@ -1,5 +1,6 @@
 import React from "react";
-
+import dinkedin from "../img/logo.png";
+import "./NavBar.css";
 
 
 const searchForPostsHandler = (event) => {
@@ -8,17 +9,44 @@ const searchForPostsHandler = (event) => {
 };
 
 const NavBar = (props) => {
+
+
+    const { username, current } = props;
+
+    const showButtons =
+        username === current
+        ?
+        <form action="/logout" method="POST">
+            <button id="logoutbutton" type="submit">
+                Logout
+            </button>
+        </form>
+        :
+        <div>
+            <a href="/join">
+                Join now
+            </a>
+            <a id="loginbutton"
+                href="/login"
+            >
+                Sign in
+            </a>
+        </div>;
+
     return (
         <nav>
-            <title></title>
+            <header>
+                <a href="/">
+                    <img id="logo" src={dinkedin} alt="DinkedIn" />
+                </a>
+                <div>
+                    WALL
+                </div>
+            </header>
             <form onSubmit={searchForPostsHandler}>
                 <input placeholder="search for posts"></input>
             </form>
-            <form action="http://localhost:8080/logout" method="POST">
-                <button id="logoutbutton" type="submit">
-                    Logout
-                </button>
-            </form>
+            {showButtons}
         </nav>
     );
 };

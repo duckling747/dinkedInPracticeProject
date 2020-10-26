@@ -73,18 +73,22 @@
                     </div>
                 </div>
             </li>
+            <li>
+                <nav id="pagination" th:if="${accountPage.totalPages > 0}" >
+                    <div>Pages:&nbsp;</div>
+                    <div th:each="pageNumber : ${pageNumbers}">
+                        <a
+                            th:href="@{/people(size=${accountPage.size}, page=${pageNumber})}"
+                            th:text="${pageNumber}"
+                        >
+                        </a>
+                        <span>&nbsp;</span>
+                    </div>
+                </nav>
+            </li>
         </ul>
 
-        <nav th:if="${accountPage.totalPages > 0}" >
-            <div th:each="pageNumber : ${pageNumbers}">
-                <a
-                    th:href="@{/people(size=${accountPage.size}, page=${pageNumber})}"
-                    th:text="${pageNumber}"
-                >
-                </a>
-                <span>&nbsp;</span>
-            </div>
-        </nav>
+        
 
         <footer th:replace="fragments/global/footer :: footer"></footer>
 
