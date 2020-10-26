@@ -11,7 +11,7 @@ export const postLogout = async () => {
             'X-XSRF-TOKEN': cookieVal
         }
     });
-    return res.json();
+    return res;
 };
 
 export const getUserWithId = async (id) => {
