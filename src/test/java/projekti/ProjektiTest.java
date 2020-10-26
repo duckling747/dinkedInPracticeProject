@@ -4,8 +4,8 @@ import org.junit.Test;
 
 public class ProjektiTest {
 
-    @Test
-    public void noTests() {
-        // projektia varten ei ole automaattisia testejä
-    }
+  @Test
+  public void yesTests() {
+    // projektia varten on automaattisia testejä
+  }
 }

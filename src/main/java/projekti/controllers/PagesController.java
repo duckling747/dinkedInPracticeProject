@@ -8,6 +8,7 @@ import java.util.stream.IntStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +26,7 @@ public class PagesController {
 
   @Autowired
   private FriendService friendService;
-    
+
   @GetMapping("/")
   public String index(final Model model) {
     final String uname = accountService.getLoggedInUser();
@@ -35,6 +36,7 @@ public class PagesController {
     return "index";
   }
 
+  @Secured("USER")
   @GetMapping("/settings")
   public String settings(final Model model) {
     final String uname = accountService.getLoggedInUser();
@@ -54,11 +56,13 @@ public class PagesController {
     return "login";
   }
 
+  @Secured("USER")
   @GetMapping("/wall")
   public String userWall(@RequestParam Long id) {
     return "redirect:/wall/index.html?id=" + id;
   }
 
+  @Secured("USER")
   @GetMapping("/people")
   public String findPeople(
       final Model model,

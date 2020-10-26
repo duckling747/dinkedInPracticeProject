@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -15,6 +16,7 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import projekti.services.CustomUserDetailsService;
 
 @Configuration
+@EnableGlobalMethodSecurity(securedEnabled = true, proxyTargetClass = true)
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
@@ -37,7 +39,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   public void configure(final AuthenticationManagerBuilder auth) throws Exception {
     auth.inMemoryAuthentication()
       .withUser("admin")
-      .password(passwordEncoder().encode("asdf"))
+      .password(passwordEncoder().encode("007erittainSalainen"))
       .roles("USER", "ADMIN");
   }
 

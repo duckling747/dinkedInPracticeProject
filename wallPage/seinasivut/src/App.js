@@ -3,6 +3,7 @@ import Footer from './components/Footer';
 import NavBar from './components/NavBar';
 import PendingFriendRequests from './components/PendingFriendRequests';
 import Posts from './components/Posts';
+import WritePostBox from './components/WritePostBox';
 import { getCurrentUser, getUserWithId } from './services/user';
 
 const App = () => {
@@ -12,6 +13,8 @@ const App = () => {
   
   const [userOfWall, setUserOfWall] = useState({});
   const [currentUser, setCurrentUser] = useState("");
+  const [filter, setFilter] = useState("");
+
 
   
   useEffect(() => {
@@ -28,6 +31,7 @@ const App = () => {
       <NavBar
         current={currentUser.username}
         username={userOfWall.username}
+        setFilter={setFilter}
       />
 
       <h2>{`Wall of ${userOfWall.username}`}</h2>
@@ -38,7 +42,9 @@ const App = () => {
         current={currentUser.username}
       />
 
-      <Posts />
+      <Posts userId={userId} filter={filter} />
+
+      <WritePostBox />
 
       <Footer />
 

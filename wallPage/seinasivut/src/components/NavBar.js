@@ -1,17 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import dinkedin from "../img/logo.png";
 import "./NavBar.css";
 import { postLogout } from "../services/user";
 
-const searchForPostsHandler = (event) => {
-    event.preventDefault();
-    // search for posts
-};
-
 const NavBar = (props) => {
 
 
-    const { username, current } = props;
+    const { username, current, setFilter } = props;
+
+    
+    const searchForPostsHandler = (event) => {
+        event.preventDefault();
+        setFilter(event.target.value);
+    };
+    
+    
 
     const submitLogout = (event) => {
         event.preventDefault();

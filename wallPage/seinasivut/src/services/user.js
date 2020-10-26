@@ -64,3 +64,23 @@ export const deleteRejectFriendship = async (from, to) => {
     });
     return res.json();
 };
+
+export const getUserAndFriendsPosts = async (id) => {
+    const res = await fetch(`/accounts/${id}/posts`);
+    return res.json();
+};
+
+export const postPost = async (id, post) => {
+    const res = await fetch(`/accounts/${id}/posts`, {
+        method: "POST",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',    
+            'X-XSRF-TOKEN': cookieVal
+        },
+        body: JSON.stringify({
+            post
+        })
+    });
+    return res.json();
+};

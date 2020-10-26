@@ -8,6 +8,6 @@ public class DefaultController {
 
   @GetMapping("*")
   public String defaultRoute() {
-    return "index";
+    return "404";
   }
 }

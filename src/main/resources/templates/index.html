@@ -34,8 +34,15 @@
                         Secret admin wall
                     </a>
                     <a
-                        th:unless="${#strings.equals(username, 'admin')}"
+                        th:unless="${#strings.equals(username, 'admin')
+                            || #strings.equals(username, 'anonymousUser')}"
                         th:href="@{/wall(id=${currentUser?.id})}"
+                    >
+                        Go to your wall
+                    </a>
+                    <a
+                        th:if="${#strings.equals(username, 'anonymousUser')}"
+                        th:href="@{/login}"
                     >
                         Go to your wall
                     </a>

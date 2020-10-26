@@ -1,15 +1,11 @@
 package projekti.controllers;
 
 import java.io.IOException;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,9 +19,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import projekti.models.Account;
 import projekti.models.FriendRequest;
+import projekti.models.Post;
 import projekti.models.ProfilePicture;
 import projekti.services.AccountService;
 import projekti.services.FriendService;
+import projekti.services.PostService;
 import projekti.services.ProfilePictureService;
 
 @RestController
@@ -40,6 +38,9 @@ public class AccountController {
 
   @Autowired
   private ProfilePictureService picService;
+
+  @Autowired
+  private PostService postService;
 
   private static final String ACCOUNTS = "/accounts";
 
@@ -80,6 +81,17 @@ public class AccountController {
     return picService.addProfilePicToDB(pp).getId();
   }
 
+  @GetMapping(path = ACCOUNTS + "/{id}/posts")
+  public List<Post> getPostsForThisGuy(@PathVariable Long id) {
+    final List<Post> res = postService.getUsersAndFriendsPosts(id);
+    return res;
+  }
+
+  @PostMapping(path = ACCOUNTS + "/{id}/posts", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public Post addUserPost(@PathVariable Long id, @RequestBody Map<String,String> postJson) {
+    return postService.addPost(id, postJson.get("post"));
+  }
+
   @GetMapping(ACCOUNTS + "/logged")
   public Map<String, String> getLogged() {
     final String uname = accountService.getLoggedInUser();
@@ -90,9 +102,9 @@ public class AccountController {
   public Map<String,String> testingRouteSetUp() throws Exception {
     accountService.clearAccounts();
     friendService.clearFriends();
-    accountService.addAccountToDB("Arnold", "b", "c", "pw");
+    final long arnieId = accountService.addAccountToDB("Arnold", "b", "c", "pw");
     accountService.addAccountToDB("Bertrand", "b", "c", "pw");
-    accountService.addAccountToDB("Bartholomew", "b", "c", "pw");
+    final long bartId = accountService.addAccountToDB("Bartholomew", "b", "c", "pw");
     accountService.addAccountToDB("Christine", "b", "c", "pw");
     accountService.addAccountToDB("Quentin", "b", "c", "pw");
     accountService.addAccountToDB("Ruth", "b", "c", "pw");
@@ -100,6 +112,11 @@ public class AccountController {
     friendService.addFriendRequestToDB("Arnold", "Bartholomew");
     friendService.addFriendRequestToDB("Bartholomew", "Christine");
     friendService.acceptFriendship("Bartholomew", "Christine");
+    postService.addPost(bartId, "Tämä on kaikista hienoin postaus");
+    postService.addPost(bartId, "Toinen postaus");
+    postService.addPost(bartId, "Blablablabldbadsfijdsaöofjösaodijfoöasdjfiosadjföoad. aosdjfasd.");
+    postService.addPost(arnieId, "Ei jumankekka tät ohjelmointii tää on nii kivaa!");
+    
     return Map.of("result", "success");
   }
 

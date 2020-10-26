@@ -10,19 +10,14 @@ const PendingFriendRequests = (props) => {
     const { id, username, current } = props;
 
     const [pendingList, setPendingList] = useState([]);
-    const [acceptReject, setAcceptReject] = useState(false);
 
     useEffect(() => {
-        if (acceptReject) {
-            setAcceptReject(false);
-            return;
-        }
         getPendingFriendRequests(id)
             .then(bod => {
                 console.log("pending reqs:", bod);
                 setPendingList(bod);
             });
-    }, [acceptReject]);
+    }, []);
 
     const acceptFriend = (friend) => {
         const r = confirm(`Are you sure you want to accept the friendship of ${friend}?`)
@@ -31,7 +26,6 @@ const PendingFriendRequests = (props) => {
             .then(bod => {
                 console.log(bod);
             });
-        setAcceptReject(true);
     };
     
     const rejectFriend = (friend) => {
@@ -41,7 +35,6 @@ const PendingFriendRequests = (props) => {
             .then(bod => {
                 console.log(bod);
             });
-        setAcceptReject(true);
     };
     
     

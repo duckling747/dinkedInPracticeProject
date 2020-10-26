@@ -2,6 +2,8 @@ package projekti.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -20,6 +22,8 @@ public class Post extends AbstractPersistable<Long> {
     
   @Column(columnDefinition = "TEXT")
   private String post;
+
+  private LocalDateTime timestamp;
 
   @JsonIgnoreProperties("posts")
   @ManyToOne

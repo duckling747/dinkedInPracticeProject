@@ -11,14 +11,16 @@ import projekti.models.Post;
 public interface PostRepository extends JpaRepository<Post, Long> {
     
   public static final String findUsersAndFriendsPostsQuery
-      = "SELECT p "
-      + "FROM FriendRequest f "
+      = "SELECT DISTINCT p "
+      + "FROM Post p "
       + "INNER JOIN Account a "
+      + "ON p.user = a.id "
+      + "LEFT JOIN FriendRequest f "
       + "ON a.id = f.issuer OR a.id = f.targetFriend "
-      + "INNER JOIN Post p "
-      + "ON a.id = p.user AND a.username = :uname "
-      + "WHERE f.accepted = true";
+      + "WHERE f.accepted = true OR a.id = :userId "
+      + "ORDER BY p.timestamp DESC";
   
   @Query(findUsersAndFriendsPostsQuery)
-  List<Post> findAllUsersAndFriendsPosts(@Param("uname") String uname);
+  List<Post> findAllUsersAndFriendsPosts(@Param("userId") Long userId);
+
 }
