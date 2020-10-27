@@ -1,6 +1,5 @@
 package projekti;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -258,45 +257,24 @@ public class AccountTest {
     );
   }
 
-  private void makePosts() {
-    final Account a = accountRepository.findByUsername("A");
+  private void makePost(Account a, String post) {
     final Post p = new Post();
     p.setUser(a);
     p.setTimestamp(LocalDateTime.now());
-    final String posting = "apost";
-    p.setPost(posting);
+    p.setPost(post);
     postRepository.save(p);
-    
-    final Account b = accountRepository.findByUsername("B");
-    final Post pb = new Post();
-    pb.setUser(b);
-    pb.setTimestamp(LocalDateTime.now());
-    final String postingb = "bpost";
-    pb.setPost(postingb);
-    postRepository.save(pb);
-    
-    final Post pb2 = new Post();
-    pb2.setUser(b);
-    pb2.setTimestamp(LocalDateTime.now());
-    final String postingb2 = "bpost2";
-    pb2.setPost(postingb2);
-    postRepository.save(pb2);
-    
-    final Account c = accountRepository.findByUsername("C");
-    final Post pc = new Post();
-    pc.setUser(c);
-    pc.setTimestamp(LocalDateTime.now());
-    final String postingc = "cpost";
-    pc.setPost(postingc);
-    postRepository.save(pc);
+  }
 
+  private void makePosts() {
+    final Account a = accountRepository.findByUsername("A");
+    makePost(a, "apost");
+    final Account b = accountRepository.findByUsername("B");
+    makePost(b, "bpost");
+    makePost(b, "bpost2");
+    final Account c = accountRepository.findByUsername("C");
+    makePost(c, "cpost");
     final Account d = accountRepository.findByUsername("D");
-    final Post pd = new Post();
-    pd.setUser(d);
-    pd.setTimestamp(LocalDateTime.now());
-    final String postingd = "dpost";
-    pd.setPost(postingd);
-    postRepository.save(pd);
+    makePost(d, "dpost");
   }
 
   @Test
