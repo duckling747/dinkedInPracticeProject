@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -282,7 +283,7 @@ public class AccountTest {
     setFriendsForTests();
     makePosts();
     final Account a = accountRepository.findByUsername("A");
-    var posts = postRepository.findAllUsersAndFriendsPosts(a.getId());
+    var posts = postRepository.findAllUsersAndFriendsPosts(a.getId(), PageRequest.of(0, 25));
     assertEquals(1, posts.size());
     assertEquals("apost", posts.get(0).getPost());
   }
@@ -292,7 +293,7 @@ public class AccountTest {
     setFriendsForTests();
     makePosts();
     final Account b = accountRepository.findByUsername("B");
-    var posts = postRepository.findAllUsersAndFriendsPosts(b.getId());
+    var posts = postRepository.findAllUsersAndFriendsPosts(b.getId(), PageRequest.of(0, 25));
     assertEquals(2, posts.size());
     assertTrue(
         posts.stream()
@@ -309,7 +310,7 @@ public class AccountTest {
     setFriendsForTests();
     makePosts();
     final Account c = accountRepository.findByUsername("C");
-    var posts = postRepository.findAllUsersAndFriendsPosts(c.getId());
+    var posts = postRepository.findAllUsersAndFriendsPosts(c.getId(), PageRequest.of(0, 25));
     assertEquals(2, posts.size());
     assertTrue(
         posts.stream()
