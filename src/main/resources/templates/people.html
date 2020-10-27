@@ -28,7 +28,7 @@
                                 <img
                                     th:if="${person.image != null}"
                                     th:alt="|Profile picture of ${person.firstName}|"
-                                    th:src="${person.image}"
+                                    th:src="@{/accounts/{id}/image(id=${person.id})}"
                                 />
                         </div>
                         <div id="details">

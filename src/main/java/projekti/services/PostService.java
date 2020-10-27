@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +26,9 @@ public class PostService {
   private AccountRepository accountRepository;
     
   public List<Post> getUsersAndFriendsPosts(final Long id) {
-    final List<Post> ret = postRepository.findAllUsersAndFriendsPosts(id);
+    // limit to first 25 hits by default
+    final Pageable pageable = PageRequest.of(0, 25);
+    final List<Post> ret = postRepository.findAllUsersAndFriendsPosts(id, pageable);
     assert ret != null;
     return ret;
   }

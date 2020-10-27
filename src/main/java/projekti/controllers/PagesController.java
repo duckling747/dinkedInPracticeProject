@@ -8,14 +8,20 @@ import java.util.stream.IntStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import projekti.models.Account;
+import projekti.models.ProfilePicture;
 import projekti.services.AccountService;
 import projekti.services.FriendService;
+import projekti.services.ProfilePictureService;
 
 @Controller
 public class PagesController {
@@ -25,6 +31,9 @@ public class PagesController {
 
   @Autowired
   private FriendService friendService;
+
+  @Autowired
+  private ProfilePictureService picService;
 
   @GetMapping("/")
   public String index(final Model model) {
@@ -42,6 +51,34 @@ public class PagesController {
     model.addAttribute("username", uname);
     model.addAttribute("currentUser", a);
     return "settings";
+  }
+
+  @PostMapping(path = "/settings/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  public String postAccount(
+      @PathVariable Long id,
+      @RequestParam("file") MultipartFile image,
+      @RequestParam("firstName") String fname,
+      @RequestParam("lastName") String lname,
+      @RequestParam("password") String pw) throws Exception {
+    Account a = accountService.findById(id);
+    if (!fname.isEmpty()) {
+      a.setFirstName(fname);
+    }
+    if (!lname.isEmpty()) {
+      a.setLastName(lname);
+    }
+    if (!pw.isEmpty()) {
+      a.setPassword(pw);
+    }
+    if (!image.isEmpty()) {
+      ProfilePicture pp = new ProfilePicture();
+      pp.setData(image.getBytes());
+      pp.setAccount(a);
+      a.setImage(pp);
+      picService.addProfilePicToDB(pp);
+    }
+    accountService.addAccountToDB(a);
+    return "redirect:/settings";
   }
 
   @GetMapping("/join")

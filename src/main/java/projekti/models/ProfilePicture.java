@@ -7,7 +7,6 @@ import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import org.springframework.data.jpa.domain.AbstractPersistable;
@@ -15,7 +14,6 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 public class ProfilePicture extends AbstractPersistable<Long> {
     
   @OneToOne
@@ -25,5 +23,20 @@ public class ProfilePicture extends AbstractPersistable<Long> {
   @Basic(fetch = FetchType.LAZY)
   private byte[] data;
 
+  public Account getAccount() {
+    return account;
+  }
+
+  public byte[] getData() {
+    return data;
+  }
+
+  public void setAccount(Account a) {
+    this.account = a;
+  }
+
+  public void setData(byte[] b) {
+    this.data = b;
+  }
 
 }

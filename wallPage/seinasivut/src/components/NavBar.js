@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import dinkedin from "../img/logo.png";
+import cog from "../img/cog.png";
 import "./NavBar.css";
 import { postLogout } from "../services/user";
 
@@ -58,6 +59,11 @@ const NavBar = (props) => {
                         <img id="logo" src={dinkedin} alt="DinkedIn" />
                     </a>
                 </header>
+            </div>
+            <div>
+                <a id="settingslink" href="/settings">
+                    <img id="cog" src={cog} alt="cog" />
+                </a>
             </div>
             <div id="authlinks">
                 <div id="filter">

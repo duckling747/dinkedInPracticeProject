@@ -51,3 +51,8 @@ nav form button {
     cursor: pointer;
     font-size: small;
 }
+
+img#cog {
+    height: 60%;
+    width: 60%;
+}

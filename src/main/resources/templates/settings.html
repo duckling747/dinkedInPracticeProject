@@ -12,6 +12,61 @@
 
         <h2>Settings</h2>
 
+        <img th:if="${currentUser.getImage() == null}" th:src="@{/img/default-profile.png}">
+        </img>
+        <img th:unless="${currentUser.getImage() == null}"
+            id="profilepicture" th:src="@{/accounts/{id}/image(id=${currentUser.getId()})}">
+        </img>
+        <table id="usertable">
+            <thead>
+                <tr>    
+                    <td><strong>Username</strong></td>
+                    <td><strong>First name</strong></td>
+                    <td><strong>Last name</strong></td>
+                </tr>
+            </thead>
+            <tr>
+                <td>
+                    <div th:text="${currentUser.getUsername()}"></div>
+                </td>
+                <td>
+                    <div th:text="${currentUser.getFirstName()}"></div>
+                </td>
+                <td>
+                    <div th:text="${currentUser.getLastName()}"></div>
+                </td>
+            </tr>
+        </table>
+        <form th:action="@{/settings/{id}(id=${currentUser.getId()})}"
+            method="POST" enctype="multipart/form-data"
+        >
+            <ul id="changelist">
+                <lh>
+                    <h4>Change things</h4>
+                </lh>
+                <li>
+                    <label>First name</label>
+                    <input type="text" name="firstName" />
+                </li>
+                <li>
+                    <label>Last name</label>
+                    <input type="text" name="lastName" />
+                </li>
+                <li>
+                    <label>Password</label>
+                    <input type="password" name="password" />
+                </li>
+                <li>
+                    <label>Profile picture</label>
+                    <input type="file" name="file" />
+                </li>
+                <li>
+                    <input type="submit" value="Make the change!" />
+                </li>
+            </ul>
+        </form>
+
+
         <footer th:replace="fragments/global/footer :: footer"></footer>
     </body>
 </html>
