@@ -4,9 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -47,23 +45,24 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   public void configure(final HttpSecurity http) throws Exception {
     if (containsTestProfile(env)) {
       http.csrf().disable();
+      http.authorizeRequests()
+        .anyRequest()
+        .permitAll();
     } else {
       http.csrf()
         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
       // http.csrf().disable();
-    }
-
-    http.headers().frameOptions().sameOrigin();
-    /////////////////////////////////
-    http.authorizeRequests()
+      http.authorizeRequests()
       .antMatchers("/", "/join/**", "/register/**", "/css/**", "/js/**", "/img/**")
       .permitAll()
       .antMatchers("/wall/?id=-1").hasAnyAuthority("ADMIN")
       .anyRequest().authenticated().and()
       .formLogin().permitAll().and()
       .logout().permitAll();
+    }
 
-    
+    http.headers().frameOptions().sameOrigin();
+    /////////////////////////////////
     http.formLogin()
       .loginPage("/login")
       .defaultSuccessUrl("/")

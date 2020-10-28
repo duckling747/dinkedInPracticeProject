@@ -36,7 +36,7 @@ public class PostService {
   public Post addPost(final Long id, final String post) {
     final Optional<Account> oa = accountRepository.findById(id);
     final Account a = oa.get();
-    final Post p = new Post(post, LocalDateTime.now(), a);
+    final Post p = new Post(post, a);
     return postRepository.save(p);
   }
 }

@@ -50,12 +50,13 @@ public class AccountController {
   }
 
   @PostMapping(ACCOUNTS)
-  public Account addAccount(@RequestBody Account account) {
+  public Long addAccount(@RequestBody Map<String,String> account) throws Exception {
 
-    if (accountService.findByUsername(account.getUsername()) != null) {
+    if (accountService.findByUsername(account.get("username")) != null) {
       throw new RuntimeException();
     }
-    return accountService.addAccountToDB(account);
+    return accountService.addAccountToDB(account.get("username"),
+        account.get("firstName"), account.get("lastName"), account.get("password"));
   }
 
   @GetMapping(ACCOUNTS + "/{id}")

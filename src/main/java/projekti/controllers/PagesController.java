@@ -60,7 +60,7 @@ public class PagesController {
       @RequestParam("firstName") String fname,
       @RequestParam("lastName") String lname,
       @RequestParam("password") String pw) throws Exception {
-    Account a = accountService.findById(id);
+    final Account a = accountService.findById(id);
     if (!fname.isEmpty()) {
       a.setFirstName(fname);
     }
@@ -70,10 +70,9 @@ public class PagesController {
     if (!pw.isEmpty()) {
       a.setPassword(pw);
     }
-    if (!image.isEmpty()) {
-      ProfilePicture pp = new ProfilePicture();
-      pp.setData(image.getBytes());
-      pp.setAccount(a);
+    if (image != null && !image.isEmpty()) {
+      final ProfilePicture pp
+          = new ProfilePicture(a, image.getBytes());
       a.setImage(pp);
       picService.addProfilePicToDB(pp);
     }

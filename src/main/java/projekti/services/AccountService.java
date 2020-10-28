@@ -51,12 +51,12 @@ public class AccountService {
     return accountRepo.findAll();
   }
 
-  public Account findById(long id) {
+  public Account findById(final long id) {
     Optional<Account> a = accountRepo.findById(id);
     return a.get();
   }
 
-  public Account findByUsername(String uname) {
+  public Account findByUsername(final String uname) {
     return accountRepo.findByUsername(uname);
   }
 
@@ -78,29 +78,27 @@ public class AccountService {
     return accountPage;
   }
 
-  public Account addAccountToDB(Account a) {
+  public Account addAccountToDB(final Account a) {
+    assert a.getPassword() != null;
     a.setPassword(passwordEncoder.encode(a.getPassword()));
     return accountRepo.save(a);
+  }
+
+  public long addAccountToDB(final String uname,
+      final String fname, final String lname, final String pw)
+      throws Exception {
+    final Account acco
+        = new Account(uname, passwordEncoder.encode(pw), fname, lname);
+    return accountRepo.save(acco).getId();
   }
 
   public void clearAccounts() {
     accountRepo.deleteAll();
   }
 
-  public long addAccountToDB(String uname, String fname, String lname, String pw)
-      throws Exception {
-    Account acco = new Account();
-    acco.setFirstName(fname);
-    acco.setLastName(lname);
-    acco.setPassword(passwordEncoder.encode(pw));
-    acco.setUsername(uname);
-    return accountRepo.save(acco).getId();
-  }
-
-
-  public long addProfilePictureToDB(String uname, byte[] data) {
-    Account a = accountRepo.findByUsername(uname);
-    ProfilePicture pic = new ProfilePicture(a, data);
+  public long addProfilePictureToDB(final String uname, final byte[] data) {
+    final Account a = accountRepo.findByUsername(uname);
+    final ProfilePicture pic = new ProfilePicture(a, data);
     return profilePicRepo.save(pic).getId();
   }
 

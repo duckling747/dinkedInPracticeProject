@@ -56,30 +56,24 @@ public class AccountTest {
   }
 
   private static String randomString() {
-    byte[] array = new byte[20];
+    final byte[] array = new byte[20];
     R.nextBytes(array);
     return new String(array, Charset.forName("UTF-8"));
   }
 
   private void addSomeAccountsToDB(int count) {
-    Account[] accounts = new Account[count];
+    final Account[] accounts = new Account[count];
     for (int i = 0; i < count; i++) {
-      Account acco = new Account();
-      acco.setFirstName(randomString());
-      acco.setLastName(randomString());
-      acco.setUsername(randomString());
-      acco.setPassword(passwordEncoder.encode(randomString()));
+      final Account acco = new Account(randomString(),
+          passwordEncoder.encode(randomString()),
+          randomString(), randomString());
       accounts[i] = acco;
     }
     accountRepository.saveAll(List.of(accounts));
   }
 
   private long addAccountToDB(String uname, String fname, String lname, String pw) {
-    Account acco = new Account();
-    acco.setFirstName(fname);
-    acco.setLastName(lname);
-    acco.setPassword(passwordEncoder.encode(pw));
-    acco.setUsername(uname);
+    final Account acco = new Account(uname, passwordEncoder.encode(pw), fname, lname);
     return accountRepository.save(acco).getId();
   }
 
@@ -109,7 +103,7 @@ public class AccountTest {
 
   @Test(expected = DataIntegrityViolationException.class)
   public void cannotAddSameUsername() {
-    String uname = "same";
+    final String uname = "same";
     addAccountToDB(uname, "fname", "lname", "pw");
     addAccountToDB(uname, "fname", "lname", "pw");
     assertTrue(accountRepository.findAll().stream().filter(
@@ -118,7 +112,7 @@ public class AccountTest {
   }
 
   private long addFriendRequestToDB(long id1, long id2) {
-    FriendRequest f = new FriendRequest(false,
+    final FriendRequest f = new FriendRequest(false,
         accountRepository.getOne(id1),
         accountRepository.getOne(id2)
     );
@@ -127,10 +121,10 @@ public class AccountTest {
 
   @Test
   public void addFriendRequestWorks() {
-    String user1 = "uname1";
-    String user2 = "uname2";
-    long id1 = addAccountToDB(user1, "fname", "lname", "pw");
-    long id2 = addAccountToDB(user2, "fname2", "lname2", "pw2");
+    final String user1 = "uname1";
+    final String user2 = "uname2";
+    final long id1 = addAccountToDB(user1, "fname", "lname", "pw");
+    final long id2 = addAccountToDB(user2, "fname2", "lname2", "pw2");
     addFriendRequestToDB(id1, id2);
     assertEquals(1L, friendRequestRepository.count());
     assertTrue(friendRequestRepository.findAll()
@@ -142,10 +136,10 @@ public class AccountTest {
   }
 
   private void setFriendsForTests() {
-    final long a = addAccountToDB("A", "fname", "lname", "pw");
-    final long b = addAccountToDB("B", "fname", "lname", "pw");
-    final long c = addAccountToDB("C", "fname", "lname", "pw");
-    final long d = addAccountToDB("D", "fname", "lname", "pw");
+    final long a = addAccountToDB("AAA", "fname", "lname", "pw");
+    final long b = addAccountToDB("BBB", "fname", "lname", "pw");
+    final long c = addAccountToDB("CCC", "fname", "lname", "pw");
+    final long d = addAccountToDB("DDD", "fname", "lname", "pw");
     addFriendRequestToDB(a, b);
     addFriendRequestToDB(b, c);
     addFriendRequestToDB(a, c);
@@ -158,16 +152,16 @@ public class AccountTest {
   @Test
   public void friendRequestSentPendingQueryWorks() {
     setFriendsForTests();
-    List<FriendRequest> sentPending = friendRequestRepository.findSentPendingQuery("A");
+    final List<FriendRequest> sentPending = friendRequestRepository.findSentPendingQuery("AAA");
     for (final FriendRequest f : sentPending) {
       assertFalse(f.isAccepted());
-      assertTrue(f.getIssuer().getUsername().equals("A"));
-      assertFalse(f.getIssuer().getUsername().equals("B"));
-      assertFalse(f.getIssuer().getUsername().equals("C"));
-      assertFalse(f.getIssuer().getUsername().equals("D"));
-      assertFalse(f.getTargetFriend().getUsername().equals("A"));
-      assertFalse(f.getTargetFriend().getUsername().equals("A"));
-      assertFalse(f.getTargetFriend().getUsername().equals("A"));
+      assertTrue(f.getIssuer().getUsername().equals("AAA"));
+      assertFalse(f.getIssuer().getUsername().equals("BBB"));
+      assertFalse(f.getIssuer().getUsername().equals("CCC"));
+      assertFalse(f.getIssuer().getUsername().equals("DDD"));
+      assertFalse(f.getTargetFriend().getUsername().equals("AAA"));
+      assertFalse(f.getTargetFriend().getUsername().equals("AAA"));
+      assertFalse(f.getTargetFriend().getUsername().equals("AAA"));
     }
     assertEquals(2, sentPending.size());
   }
@@ -175,16 +169,16 @@ public class AccountTest {
   @Test
   public void friendRequestReceivedPendingQueryWorks() {
     setFriendsForTests();
-    List<FriendRequest> receivedPending = friendRequestRepository.findReceivedPendingQuery("B");
+    List<FriendRequest> receivedPending = friendRequestRepository.findReceivedPendingQuery("BBB");
     for (final FriendRequest f : receivedPending) {
       assertFalse(f.isAccepted());
-      assertTrue(f.getTargetFriend().getUsername().equals("B"));
-      assertFalse(f.getTargetFriend().getUsername().equals("A"));
-      assertFalse(f.getTargetFriend().getUsername().equals("C"));
-      assertFalse(f.getTargetFriend().getUsername().equals("D"));
-      assertFalse(f.getIssuer().getUsername().equals("B"));
-      assertFalse(f.getIssuer().getUsername().equals("B"));
-      assertFalse(f.getIssuer().getUsername().equals("B"));
+      assertTrue(f.getTargetFriend().getUsername().equals("BBB"));
+      assertFalse(f.getTargetFriend().getUsername().equals("AAA"));
+      assertFalse(f.getTargetFriend().getUsername().equals("CCC"));
+      assertFalse(f.getTargetFriend().getUsername().equals("DDD"));
+      assertFalse(f.getIssuer().getUsername().equals("BBB"));
+      assertFalse(f.getIssuer().getUsername().equals("BBB"));
+      assertFalse(f.getIssuer().getUsername().equals("BBB"));
     }
     assertEquals(1, receivedPending.size());
   }
@@ -192,31 +186,32 @@ public class AccountTest {
   @Test
   public void friendQueryWorks1() {
     setFriendsForTests();
-    List<FriendRequest> sentPending = friendRequestRepository.findSentPendingQuery("A");
-    FriendRequest fr = sentPending.get(0);
+    final List<FriendRequest> sentPending = friendRequestRepository.findSentPendingQuery("AAA");
+    final FriendRequest fr = sentPending.get(0);
     final String tName = fr.getTargetFriend().getUsername();
     fr.setAccepted(true);
     friendRequestRepository.saveAndFlush(fr);
-    List<FriendRequest> friends = friendRequestRepository.findFriends("A");
+    final List<FriendRequest> friends = friendRequestRepository.findFriends("AAA");
     assertEquals(1, friends.size());
-    assertTrue(friends.get(0).getIssuer().getUsername().equals("A")
+    assertTrue(friends.get(0).getIssuer().getUsername().equals("AAA")
         && friends.get(0).getTargetFriend().getUsername().equals(tName));
   }
 
   @Test
   public void friendQueryWorks2() {
     setFriendsForTests();
-    List<FriendRequest> sentPending = friendRequestRepository.findSentPendingQuery("A");
+    final List<FriendRequest> sentPending
+        = friendRequestRepository.findSentPendingQuery("AAA");
     for (final FriendRequest f : sentPending) {
       f.setAccepted(true);
     }
     friendRequestRepository.saveAll(sentPending);
     friendRequestRepository.flush();
 
-    List<FriendRequest> friends = friendRequestRepository.findFriends("A");
+    final List<FriendRequest> friends = friendRequestRepository.findFriends("AAA");
     assertEquals(sentPending.size(), friends.size());
     for (final FriendRequest f : friends) {
-      assertTrue(f.getIssuer().getUsername().equals("A"));
+      assertTrue(f.getIssuer().getUsername().equals("AAA"));
       assertTrue(sentPending.contains(f));
     }
 
@@ -225,22 +220,24 @@ public class AccountTest {
   @Test
   public void eitherOrQueryWorks1() {
     setFriendsForTests();
-    List<FriendRequest> res = friendRequestRepository.findByEitherSenderOrReceiver("A", "B");
+    final List<FriendRequest> res
+        = friendRequestRepository.findByEitherSenderOrReceiver("AAA", "BBB");
     assertEquals(1, res.size());
     FriendRequest f = res.get(0);
-    assertTrue((f.getIssuer().getUsername().equals("A")
-        && f.getTargetFriend().getUsername().equals("B"))
+    assertTrue((f.getIssuer().getUsername().equals("AAA")
+        && f.getTargetFriend().getUsername().equals("BBB"))
     );
   }
 
   @Test
   public void eitherOrQueryWorks2() {
     setFriendsForTests();
-    List<FriendRequest> res = friendRequestRepository.findByEitherSenderOrReceiver("B", "A");
+    final List<FriendRequest> res
+        = friendRequestRepository.findByEitherSenderOrReceiver("BBB", "AAA");
     assertEquals(1, res.size());
-    FriendRequest f = res.get(0);
-    assertTrue((f.getIssuer().getUsername().equals("A")
-        && f.getTargetFriend().getUsername().equals("B"))
+    final FriendRequest f = res.get(0);
+    assertTrue((f.getIssuer().getUsername().equals("AAA")
+        && f.getTargetFriend().getUsername().equals("BBB"))
     );
   }
 
@@ -267,14 +264,14 @@ public class AccountTest {
   }
 
   private void makePosts() {
-    final Account a = accountRepository.findByUsername("A");
+    final Account a = accountRepository.findByUsername("AAA");
     makePost(a, "apost");
-    final Account b = accountRepository.findByUsername("B");
+    final Account b = accountRepository.findByUsername("BBB");
     makePost(b, "bpost");
     makePost(b, "bpost2");
-    final Account c = accountRepository.findByUsername("C");
+    final Account c = accountRepository.findByUsername("CCC");
     makePost(c, "cpost");
-    final Account d = accountRepository.findByUsername("D");
+    final Account d = accountRepository.findByUsername("DDD");
     makePost(d, "dpost");
   }
 
@@ -282,7 +279,7 @@ public class AccountTest {
   public void postQueryWorks1() {
     setFriendsForTests();
     makePosts();
-    final Account a = accountRepository.findByUsername("A");
+    final Account a = accountRepository.findByUsername("AAA");
     var posts = postRepository.findAllUsersAndFriendsPosts(a.getId(), PageRequest.of(0, 25));
     assertEquals(1, posts.size());
     assertEquals("apost", posts.get(0).getPost());
@@ -292,7 +289,7 @@ public class AccountTest {
   public void postQueryWorks2() {
     setFriendsForTests();
     makePosts();
-    final Account b = accountRepository.findByUsername("B");
+    final Account b = accountRepository.findByUsername("BBB");
     var posts = postRepository.findAllUsersAndFriendsPosts(b.getId(), PageRequest.of(0, 25));
     assertEquals(2, posts.size());
     assertTrue(
@@ -309,7 +306,7 @@ public class AccountTest {
   public void postQueryWorks3() {
     setFriendsForTests();
     makePosts();
-    final Account c = accountRepository.findByUsername("C");
+    final Account c = accountRepository.findByUsername("CCC");
     var posts = postRepository.findAllUsersAndFriendsPosts(c.getId(), PageRequest.of(0, 25));
     assertEquals(2, posts.size());
     assertTrue(

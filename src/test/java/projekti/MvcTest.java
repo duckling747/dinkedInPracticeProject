@@ -87,12 +87,12 @@ public class MvcTest {
   
   @Test
   public void postAccountWorks() throws Exception {
-    final String json = makeJson("username", "firstName", "lastName", "password");
+    final String json = makeJson("uname", "fname", "lname", "pw");
     mockMvc.perform(post("/accounts")
       .contentType(MediaType.APPLICATION_JSON)
       .content(json)
     ).andExpect(status().isOk());
-    final var a = accountRepository.findByUsername("username");
+    final var a = accountRepository.findByUsername("uname");
     assertNotNull(a);
   }
 
