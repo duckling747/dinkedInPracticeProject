@@ -1,0 +1,38 @@
+body {
+    text-rendering: optimizeLegibility;
+    font-family: 'Times New Roman', Times, serif;
+    text-align: center;
+}
+
+h2 {
+    font-size: xx-large;
+    color: #069;
+}
+
+img#profilepicture {
+  width: 250px;
+  height: 250px;
+}
+
+div#container {
+  overflow: auto;
+}
+
+div#usertable {
+  display: inline-block;
+  margin-left: 40px;
+}
+
+div#changeform {
+  display: inline-block;
+  margin-left: 40px;
+}
+
+div#changeform ul {
+  list-style: none;
+}
+
+div#changeform ul li {
+  margin-top: 10px;
+  text-align: center;
+}

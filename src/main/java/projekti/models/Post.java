@@ -30,7 +30,6 @@ public class Post extends AbstractPersistable<Long> {
   private LocalDateTime timestamp;
 
   @JsonIgnoreProperties("posts")
-  @JsonIgnore
   @ManyToOne
   private Account user;
 
