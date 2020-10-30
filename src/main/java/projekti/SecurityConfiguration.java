@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -53,9 +54,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
       // http.csrf().disable();
       http.authorizeRequests()
-      .antMatchers("/", "/join/**", "/register/**", "/css/**", "/js/**", "/img/**")
+      .antMatchers(HttpMethod.GET, "/", "/join/**", "/register/**", "/css/**", "/js/**", "/img/**")
       .permitAll()
-      .antMatchers("/wall/?id=-1").hasAnyAuthority("ADMIN")
+      .antMatchers(HttpMethod.POST, "/accounts")
+      .anonymous()
+      .antMatchers(HttpMethod.OPTIONS)
+      .permitAll()
       .anyRequest().authenticated().and()
       .formLogin().permitAll().and()
       .logout().permitAll();
