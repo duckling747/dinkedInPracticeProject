@@ -82,5 +82,5 @@ export const postPost = async (id, post) => {
             post
         })
     });
-    return res.json();
+    return res;
 };

@@ -4,7 +4,9 @@ import NavBar from './components/NavBar';
 import PendingFriendRequests from './components/PendingFriendRequests';
 import Posts from './components/Posts';
 import WritePostBox from './components/WritePostBox';
-import { getCurrentUser, getPendingFriendRequests, getUserAndFriendsPosts, getUserWithId } from './services/user';
+import {
+  getCurrentUser, getPendingFriendRequests, getUserAndFriendsPosts, getUserWithId
+} from './services/user';
 
 const App = () => {
 
@@ -53,7 +55,13 @@ const App = () => {
         setFilter={setFilter}
       />
 
-      <h2>{`Wall of ${userOfWall.username}`}</h2>
+      <h2>
+        {
+      `Wall of ${userOfWall.username} ${currentUser.username === userOfWall.username 
+        ? "(that's you)"
+        : ""}`
+        }
+      </h2>
       
       <PendingFriendRequests
         refetchFriendReqs={refetchFriendReqs}
@@ -68,7 +76,10 @@ const App = () => {
         posts={posts}
       />
 
-      <WritePostBox />
+      <WritePostBox id={userId} refetchPosts={refetchPosts}
+        username={userOfWall.username}
+        current={currentUser.username}      
+      />
 
       <Footer />
 
