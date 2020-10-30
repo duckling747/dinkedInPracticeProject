@@ -1,9 +1,11 @@
 import React from "react";
+import Likebutton from "./Likebutton";
 import "./Posts.css";
+import PropTypes from "prop-types";
 
 const Posts = (props) => {
 
-    const { filter, posts } = props;
+    const { filter, posts, userId, refetchPosts, show } = props;
 
     if (!posts || posts.length < 1) return <section>
         No posts yet...
@@ -26,12 +28,23 @@ const Posts = (props) => {
                 `@ ${new Date(p.timestamp).toLocaleString()} ${p.user.username} says...`
                 }
                 </h4>
-                {p.post}
+                <p>
+                    {p.post}
+                </p>
+                <Likebutton p={p} userId={userId} refetchPosts={refetchPosts} show={show} />
             </li>
             )
         }
         </ul>
     </section>
 };
+
+Posts.propTypes = {
+    filter: PropTypes.string.isRequired,
+    posts: PropTypes.array.isRequired,
+    userId: PropTypes.number.isRequired,
+    refetchPosts: PropTypes.func.isRequired,
+    show: PropTypes.bool.isRequired
+}
 
 export default Posts;

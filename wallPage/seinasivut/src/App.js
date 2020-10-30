@@ -7,6 +7,8 @@ import WritePostBox from './components/WritePostBox';
 import {
   getCurrentUser, getPendingFriendRequests, getUserAndFriendsPosts, getUserWithId
 } from './services/user';
+import defaultImg from "./img/default-profile.png"
+import "./App.css";
 
 const App = () => {
 
@@ -47,38 +49,46 @@ const App = () => {
 
   if (!userOfWall.username) return null;
 
+  const currentUserIsUserOfWall = currentUser.username === userOfWall.username;
+
   return (
     <div>
       <NavBar
-        current={currentUser.username}
-        username={userOfWall.username}
+        show={currentUserIsUserOfWall}
         setFilter={setFilter}
       />
 
       <h2>
         {
-      `Wall of ${userOfWall.username} ${currentUser.username === userOfWall.username 
+      `Wall of ${userOfWall.username} ${currentUserIsUserOfWall 
         ? "(that's you)"
         : ""}`
         }
       </h2>
+
+      <object className="imgstuff" data={`/accounts/${userOfWall.id}/image`} type="image/png">
+        <img className="imgstuff" src={defaultImg} alt="default image"></img>
+      </object>
       
       <PendingFriendRequests
         refetchFriendReqs={refetchFriendReqs}
         refetchPosts={refetchPosts}
         pendingList={pendingList}
-        username={userOfWall.username}
         current={currentUser.username}
+        show={currentUserIsUserOfWall}
       />
 
       <Posts userId={userId}
+        refetchPosts={refetchPosts}
         filter={filter}
         posts={posts}
+        show={currentUserIsUserOfWall}
       />
 
-      <WritePostBox id={userId} refetchPosts={refetchPosts}
-        username={userOfWall.username}
-        current={currentUser.username}      
+      <WritePostBox
+        id={userId}
+        refetchPosts={refetchPosts}
+        show={currentUserIsUserOfWall}    
       />
 
       <Footer />

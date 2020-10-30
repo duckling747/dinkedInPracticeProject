@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { postPost } from "../services/user";
 import "./WritePostBox.css";
-
+import PropTypes from "prop-types";
 
 const buttonTexts = [
     "Send it!",
@@ -15,7 +15,7 @@ const randomizedMessage = () => {
     return buttonTexts[buttonTexts.length * Math.random() | 0];
 };
 
-const WritePostBox = ({ id, refetchPosts, username, current }) => {
+const WritePostBox = ({ id, refetchPosts, show }) => {
 
     const [post, setPost] = useState("");
     const [buttonMessage, setButtonMessage] = useState("");
@@ -41,7 +41,7 @@ const WritePostBox = ({ id, refetchPosts, username, current }) => {
         setButtonMessage(randomizedMessage());
         refetchPosts();
     };
-    if (username !== current) return null;
+    if (!show) return null;
 
     return (
         <div id="postbox">
@@ -64,5 +64,11 @@ const WritePostBox = ({ id, refetchPosts, username, current }) => {
         </div>
     );
 };
+
+WritePostBox.propTypes = {
+    id: PropTypes.number.isRequired,
+    refetchPosts: PropTypes.func.isRequired,
+    show: PropTypes.bool.isRequired
+}
 
 export default WritePostBox;

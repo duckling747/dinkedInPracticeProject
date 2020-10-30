@@ -84,3 +84,13 @@ export const postPost = async (id, post) => {
     });
     return res;
 };
+
+export const likePost = async (userId, postId) => {
+    const res = await fetch(`/accounts/${userId}/posts/${postId}/like`, {
+        method: "POST",
+        headers: {
+            'X-XSRF-TOKEN': cookieVal
+        }
+    });
+    return res;
+};

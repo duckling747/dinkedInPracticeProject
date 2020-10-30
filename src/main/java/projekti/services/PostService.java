@@ -3,6 +3,7 @@ package projekti.services;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -38,5 +39,20 @@ public class PostService {
     final Account a = oa.get();
     final Post p = new Post(post, a);
     return postRepository.save(p);
+  }
+
+  public void likePost(final Long accountId, final Long postId) {
+    final Account a = accountRepository.findById(accountId).get();
+    final Post p = postRepository.findById(postId).get();
+    final Set<Account> likes = p.getLikes();
+    if (likes.contains(a)) {
+      likes.remove(a);
+      a.getLikedPosts().remove(p);
+    } else {
+      likes.add(a);
+      a.getLikedPosts().add(p);
+    }
+    accountRepository.save(a);
+    postRepository.save(p);
   }
 }

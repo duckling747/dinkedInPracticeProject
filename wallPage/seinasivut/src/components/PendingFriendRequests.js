@@ -1,14 +1,11 @@
 import React from "react";
 import { deleteRejectFriendship, putAcceptFriendship } from "../services/user";
 import "./PendingFriendRequests.css";
-
-
-
+import PropTypes from "prop-types";
 
 const PendingFriendRequests = (props) => {
 
-    const { username, current, pendingList, refetchFriendReqs, refetchPosts } = props;
-
+    const { show, current, pendingList, refetchFriendReqs, refetchPosts } = props;
 
     const acceptFriend = async (friend) => {
         const r = confirm(`Are you sure you want to accept the friendship of ${friend}?`)
@@ -26,12 +23,8 @@ const PendingFriendRequests = (props) => {
         console.log(bod);
         refetchFriendReqs();
     };
-    
-    
 
-    console.log("username", username);
-    console.log("current", current);
-    if (username !== current) return null;
+    if (!show) return null;
 
     if (!pendingList || pendingList.length < 1) return null;
 
@@ -74,5 +67,13 @@ const PendingFriendRequests = (props) => {
         </aside>
     );
 };
+
+PendingFriendRequests.propTypes = {
+    show: PropTypes.bool.isRequired,
+    current: PropTypes.string.isRequired,
+    pendingList: PropTypes.array.isRequired,
+    refetchFriendReqs: PropTypes.func.isRequired,
+    refetchPosts: PropTypes.func.isRequired
+}
 
 export default PendingFriendRequests;

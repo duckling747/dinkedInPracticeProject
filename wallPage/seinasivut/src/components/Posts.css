@@ -2,3 +2,11 @@ ul {
     margin-bottom: 100px;
 }
 
+section {
+    margin-bottom: 30px;
+}
+
+img#thumbimage {
+    width: 20px;
+    height: 20px;
+}

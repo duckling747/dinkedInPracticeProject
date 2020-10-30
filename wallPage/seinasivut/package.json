@@ -8,7 +8,9 @@
     "react-scripts": "^4.0.0"
   },
   "homepage": "/wall/",
-  "devDependencies": {},
+  "devDependencies": {
+    "prop-types": "^15.7.2"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

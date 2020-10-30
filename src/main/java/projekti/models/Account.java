@@ -4,10 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -70,10 +73,10 @@ public class Account extends AbstractPersistable<Long> {
   @OneToMany(mappedBy = "recipient")
   private List<Message> receivedMessages = new ArrayList<>();
 
-  @JsonIgnoreProperties("user")
+  @JsonIgnoreProperties("likes")
   @JsonIgnore
-  @OneToMany(mappedBy = "user")
-  private List<LikeTable> sentLikes = new ArrayList<>();
+  @ManyToMany(mappedBy = "likes")
+  private Set<Post> likedPosts = new HashSet<>();
 
   public Account(final String username,
       final String password, final String firstName, final String lastName) {
@@ -82,5 +85,23 @@ public class Account extends AbstractPersistable<Long> {
     this.username = username;
     this.password = password;
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (!(o instanceof Account)) {
+      return false;
+    }
+    Account account = (Account) o;
+    return username.equals(account.username);
+  }
+
+  @Override
+  public int hashCode() {
+    return username.hashCode();
+  }
+  
 
 }
