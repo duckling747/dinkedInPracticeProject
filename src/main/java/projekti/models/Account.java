@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
@@ -46,6 +47,7 @@ public class Account extends AbstractPersistable<Long> {
   @JsonIgnoreProperties("account")
   @JsonIgnore
   @OneToOne(mappedBy = "account")
+  @Nullable
   private ProfilePicture image;
 
   @JsonIgnoreProperties("user")
@@ -77,6 +79,11 @@ public class Account extends AbstractPersistable<Long> {
   @JsonIgnore
   @ManyToMany(mappedBy = "likes")
   private Set<Post> likedPosts = new HashSet<>();
+
+  @JsonIgnoreProperties("user")
+  @JsonIgnore
+  @OneToMany(mappedBy = "user")
+  private List<Skill> skills = new ArrayList<>();
 
   public Account(final String username,
       final String password, final String firstName, final String lastName) {

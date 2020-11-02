@@ -72,6 +72,103 @@
                 </form>
             </div>
         </div>
+        <div id="userskills">
+            <table id="skilltable">
+                <thead>
+                    <h3>Skills</h3>
+                </thead>
+                <tbody>
+                    <tr th:each="skill : ${currentUser.getSkills()}">
+                        <td><strong th:text="${skill.title}"></strong></td>
+                        <td th:text="${skill.description}"></td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <!--popups start-->
+                        
+                        <!--popups end-->
+
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="popup">
+                                <div class="popupcontent" id="popupAdd">
+                                    <form>
+                                        <div class="meat">
+                                            <input
+                                                type="text"
+                                                placeholder="title"
+                                            />
+                                            <input
+                                                type="text"
+                                                placeholder="description"
+                                            />
+                                        </div>
+                                        <button
+                                            type="submit"
+                                        >
+                                            send away!
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onclick="addShowToggle()"
+                                        >
+                                            cancel
+                                        </button>
+                                    </form>
+                                </div>
+                                <button id="popupAddSkills"
+                                    onclick="addShowToggle()"
+                                >
+                                    Add a skill
+                                </button>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="popup">
+                                <div class="popupcontent" id="popupDel">
+                                    <form>
+                                        <div
+                                            class="meat"
+                                        >
+                                            <div
+                                            th:each="skill : ${currentUser.getSkills()}">
+                                                <input
+                                                    th:text="${skill.title}"
+                                                    type="radio"
+                                                    name="title"
+                                                    th:value="${skill.id}"
+                                                />
+                                            </div>
+                                        </div>
+                                        <button type="submit">
+                                            Delete selected!
+                                        </button>
+                                        <button type="button"
+                                            onclick="delShowToggle()"
+                                        >
+                                            cancel
+                                        </button>
+                                    </form>
+                                </div>
+                                <button id="popupDelSkills"
+                                    onclick="delShowToggle()"
+                                >
+                                    Delete a skill
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+            <form>
+
+            </form>
+        </div>
+
+        <script th:inline="javascript"> var contextRoot = /*[[@{/}]]*/ '';</script>
+        <script th:src="@{/js/settingsPopups.js}" defer></script>
 
         <footer th:replace="fragments/global/footer :: footer"></footer>
     </body>

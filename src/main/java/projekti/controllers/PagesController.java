@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import projekti.models.Account;
 import projekti.models.ProfilePicture;
+import projekti.models.Skill;
 import projekti.services.AccountService;
 import projekti.services.FriendService;
 import projekti.services.ProfilePictureService;
@@ -48,6 +49,8 @@ public class PagesController {
   public String settings(final Model model) {
     final String uname = accountService.getLoggedInUser();
     final Account a = accountService.findByUsername(uname);
+    a.setSkills(List.of(new Skill(a, "tiskari", "Olin tiskijukkana vuosina 2001-2005"),
+        new Skill(a, "korjaaja", "Olin putkimiehenä ja korjailina asioita 2005-2009")));
     model.addAttribute("username", uname);
     model.addAttribute("currentUser", a);
     return "settings";
