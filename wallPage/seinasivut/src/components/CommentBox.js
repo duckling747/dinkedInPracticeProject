@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { addComment } from "../services/user";
 
-const CommentBox = ({ p, userId, refetchPosts, show }) => {
+const CommentBox = ({ p, userId, show, refetchComments }) => {
 
     const [comment, setComment] = useState("");
 
@@ -18,8 +18,8 @@ const CommentBox = ({ p, userId, refetchPosts, show }) => {
             return;
         }
         setComment("");
+        refetchComments();
         alert("Comment published!");
-        refetchPosts();
     };
 
     if (!show) return null;

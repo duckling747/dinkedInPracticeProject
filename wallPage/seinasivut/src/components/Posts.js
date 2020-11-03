@@ -32,10 +32,7 @@ const Posts = (props) => {
                     {p.post}
                 </p>
                 <Likebutton p={p} userId={userId} refetchPosts={refetchPosts} show={show} />
-                <Comments p={p} userId={userId} />
-                <CommentBox p={p} userId={userId} refetchPosts={refetchPosts}
-                    show={show}
-                />
+                <Comments p={p} userId={userId} show={show} />
             </li>
             )
         }

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { getComments } from "../services/user";
+import CommentBox from "./CommentBox";
 
-const Comments = ({ userId, p }) => {
+const Comments = ({ userId, p, show }) => {
     
     const [showComments, setShowComments] = useState(false);
     const [comments, setComments] = useState([]);
@@ -13,6 +14,10 @@ const Comments = ({ userId, p }) => {
             .then(bod => setComments(bod));
     }, [showComments]);
 
+    const refetchComments = async () => {
+        const bod = await getComments(userId, p.id);
+        setComments([...bod]);
+    };
 
     const commentsButtonListener = () => {
         setShowComments(!showComments);
@@ -54,6 +59,9 @@ const Comments = ({ userId, p }) => {
                     )
                     }
                 </div>
+            <CommentBox p={p} userId={userId}
+                show={show} refetchComments={refetchComments}
+            />
         </div>
     )
 };
