@@ -36,7 +36,14 @@ const Comments = ({ userId, p, show }) => {
         )
     }
 
-    if (comments.length < 1) return <p>no comments yet...</p>
+    if (comments.length < 1) return (
+        <div>
+            <p>no comments yet...</p>
+            <CommentBox p={p} userId={userId}
+                show={show} refetchComments={refetchComments}
+            />
+        </div>
+    )
 
     return (
         <div>
