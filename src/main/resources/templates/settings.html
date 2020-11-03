@@ -94,14 +94,19 @@
                         <td>
                             <div class="popup">
                                 <div class="popupcontent" id="popupAdd">
-                                    <form>
+                                    <form
+                                        th:action="@{/settings/{id}/skills(id=${currentUser.getId()})}"
+                                        method="POST"
+                                    >
                                         <div class="meat">
                                             <input
                                                 type="text"
+                                                name="title"
                                                 placeholder="title"
                                             />
                                             <input
                                                 type="text"
+                                                name="description"
                                                 placeholder="description"
                                             />
                                         </div>
@@ -128,7 +133,10 @@
                         <td>
                             <div class="popup">
                                 <div class="popupcontent" id="popupDel">
-                                    <form>
+                                    <form
+                                        th:action="@{/settings/{id}/skills/delete(id=${currentUser.getId()})}"
+                                        method="POST"
+                                    >
                                         <div
                                             class="meat"
                                         >
@@ -137,7 +145,7 @@
                                                 <input
                                                     th:text="${skill.title}"
                                                     type="radio"
-                                                    name="title"
+                                                    name="id"
                                                     th:value="${skill.id}"
                                                 />
                                             </div>

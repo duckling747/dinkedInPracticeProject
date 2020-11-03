@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import projekti.models.Account;
+import projekti.models.Comment;
 import projekti.models.FriendRequest;
 import projekti.models.Post;
 import projekti.models.ProfilePicture;
@@ -99,6 +100,19 @@ public class AccountController {
   @ResponseStatus(value = HttpStatus.OK)
   public void sendLike(@PathVariable Long userId, @PathVariable Long postId) {
     postService.likePost(userId, postId);
+  }
+
+  @GetMapping(path = ACCOUNTS + "/{userId}/posts/{postId}/comment")
+  public List<Comment> getComments(@PathVariable Long userId, @PathVariable Long postId) {
+    return postService.getComments(postId);
+  }
+
+  @PostMapping(path = ACCOUNTS + "/{userId}/posts/{postId}/comment",
+      consumes = MediaType.APPLICATION_JSON_VALUE)
+  @ResponseStatus(value = HttpStatus.OK)
+  public void sendComment(@PathVariable Long userId, @PathVariable Long postId,
+      @RequestBody Map<String,String> commentJson) {
+    postService.addComment(userId, postId, commentJson.get("comment"));
   }
 
   @GetMapping(ACCOUNTS + "/logged")

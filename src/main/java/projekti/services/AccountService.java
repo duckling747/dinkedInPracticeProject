@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -48,7 +49,7 @@ public class AccountService {
   }
 
   public List<Account> findAll() {
-    return accountRepo.findAll();
+    return accountRepo.findAll(Sort.by(Sort.Order.asc("Username").ignoreCase()));
   }
 
   public Account findById(final long id) {
@@ -64,7 +65,8 @@ public class AccountService {
     final int pageSize = pageable.getPageSize();
     final int currentPage = pageable.getPageNumber();
     final int startItem = currentPage * pageSize;
-    List<Account> list = accountRepo.findAll();
+    List<Account> list = accountRepo
+        .findAll(Sort.by(Sort.Order.asc("Username").ignoreCase()));
 
     final int count = list.size();
     if (count < startItem) {

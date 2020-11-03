@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import Likebutton from "./Likebutton";
 import "./Posts.css";
 import PropTypes from "prop-types";
+import CommentBox from "./CommentBox";
+import Comments from "./Comments";
 
 const Posts = (props) => {
 
@@ -11,10 +13,8 @@ const Posts = (props) => {
         No posts yet...
     </section>;
 
-    console.log("postsList in Posts", posts);
-
     return <section>
-        <h3>Posts</h3>
+        <h2>Posts</h2>
         <ul>
         {
         posts
@@ -23,15 +23,19 @@ const Posts = (props) => {
             )
             .map((p, i) =>
             <li key={i}>
-                <h4>
+                <h3>
                 {
                 `@ ${new Date(p.timestamp).toLocaleString()} ${p.user.username} says...`
                 }
-                </h4>
+                </h3>
                 <p>
                     {p.post}
                 </p>
                 <Likebutton p={p} userId={userId} refetchPosts={refetchPosts} show={show} />
+                <Comments p={p} userId={userId} />
+                <CommentBox p={p} userId={userId} refetchPosts={refetchPosts}
+                    show={show}
+                />
             </li>
             )
         }
@@ -42,7 +46,7 @@ const Posts = (props) => {
 Posts.propTypes = {
     filter: PropTypes.string.isRequired,
     posts: PropTypes.array.isRequired,
-    userId: PropTypes.number.isRequired,
+    userId: PropTypes.string.isRequired,
     refetchPosts: PropTypes.func.isRequired,
     show: PropTypes.bool.isRequired
 }

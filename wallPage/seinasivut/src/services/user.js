@@ -94,3 +94,23 @@ export const likePost = async (userId, postId) => {
     });
     return res;
 };
+
+export const addComment = async (userId, postId, comment) => {
+    const res = await fetch(`/accounts/${userId}/posts/${postId}/comment`, {
+        method: "POST",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'X-XSRF-TOKEN': cookieVal
+        },
+        body: JSON.stringify({
+            comment
+        })
+    });
+    return res;
+};
+
+export const getComments = async (userId, postId) => {
+    const res = await fetch(`/accounts/${userId}/posts/${postId}/comment`);
+    return res.json();
+}

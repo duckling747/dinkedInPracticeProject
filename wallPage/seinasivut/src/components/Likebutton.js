@@ -30,7 +30,7 @@ const Likebutton = ({p, refetchPosts, userId, show }) => {
 Likebutton.propTypes = {
     p: PropTypes.object.isRequired,
     refetchPosts: PropTypes.func.isRequired,
-    userId: PropTypes.number.isRequired,
+    userId: PropTypes.string.isRequired,
     show: PropTypes.bool.isRequired
 };
 

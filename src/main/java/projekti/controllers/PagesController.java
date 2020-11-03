@@ -19,10 +19,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import projekti.models.Account;
 import projekti.models.ProfilePicture;
-import projekti.models.Skill;
 import projekti.services.AccountService;
 import projekti.services.FriendService;
 import projekti.services.ProfilePictureService;
+import projekti.services.SkillService;
 
 @Controller
 public class PagesController {
@@ -35,6 +35,9 @@ public class PagesController {
 
   @Autowired
   private ProfilePictureService picService;
+
+  @Autowired
+  private SkillService skillService;
 
   @GetMapping("/")
   public String index(final Model model) {
@@ -49,8 +52,6 @@ public class PagesController {
   public String settings(final Model model) {
     final String uname = accountService.getLoggedInUser();
     final Account a = accountService.findByUsername(uname);
-    a.setSkills(List.of(new Skill(a, "tiskari", "Olin tiskijukkana vuosina 2001-2005"),
-        new Skill(a, "korjaaja", "Olin putkimiehenä ja korjailina asioita 2005-2009")));
     model.addAttribute("username", uname);
     model.addAttribute("currentUser", a);
     return "settings";
@@ -80,6 +81,24 @@ public class PagesController {
       picService.addProfilePicToDB(pp);
     }
     accountService.addAccountToDB(a);
+    return "redirect:/settings";
+  }
+
+  @PostMapping(path = "/settings/{id}/skills")
+  public String postSkill(
+      @PathVariable Long id,
+      @RequestParam String title,
+      @RequestParam String description) {
+    final Account a = accountService.findById(id);
+    skillService.addSkill(a, title, description);
+    return "redirect:/settings";
+  }
+
+  @PostMapping(path = "/settings/{userId}/skills/delete")
+  public String deleteSkill(
+      @PathVariable Long userId,
+      @RequestParam Long id) {
+    skillService.deleteSkill(id);
     return "redirect:/settings";
   }
 

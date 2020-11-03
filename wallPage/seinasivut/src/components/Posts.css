@@ -1,5 +1,18 @@
+h2 {
+    background-color: lightgray;
+}
+
 ul {
     margin-bottom: 100px;
+    list-style: none;
+}
+
+ul li {
+    background: lightgray;
+}
+
+ul li:nth-child(odd) {
+    background: white;
 }
 
 section {

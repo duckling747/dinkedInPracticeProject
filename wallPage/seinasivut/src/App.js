@@ -58,13 +58,13 @@ const App = () => {
         setFilter={setFilter}
       />
 
-      <h2>
+      <h1>
         {
       `Wall of ${userOfWall.username} ${currentUserIsUserOfWall 
         ? "(that's you)"
         : ""}`
         }
-      </h2>
+      </h1>
 
       <object className="imgstuff" data={`/accounts/${userOfWall.id}/image`} type="image/png">
         <img className="imgstuff" src={defaultImg} alt="default image"></img>
@@ -88,7 +88,7 @@ const App = () => {
       <WritePostBox
         id={userId}
         refetchPosts={refetchPosts}
-        show={currentUserIsUserOfWall}    
+        show={currentUserIsUserOfWall}
       />
 
       <Footer />

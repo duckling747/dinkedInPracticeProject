@@ -85,6 +85,11 @@ public class Account extends AbstractPersistable<Long> {
   @OneToMany(mappedBy = "user")
   private List<Skill> skills = new ArrayList<>();
 
+  @JsonIgnoreProperties("text")
+  @JsonIgnore
+  @OneToMany(mappedBy = "user")
+  private List<Comment> comments = new ArrayList<>();
+
   public Account(final String username,
       final String password, final String firstName, final String lastName) {
     this.firstName = firstName;

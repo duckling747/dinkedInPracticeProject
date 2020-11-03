@@ -66,7 +66,7 @@ const WritePostBox = ({ id, refetchPosts, show }) => {
 };
 
 WritePostBox.propTypes = {
-    id: PropTypes.number.isRequired,
+    id: PropTypes.string.isRequired,
     refetchPosts: PropTypes.func.isRequired,
     show: PropTypes.bool.isRequired
 }
