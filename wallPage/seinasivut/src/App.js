@@ -5,10 +5,11 @@ import PendingFriendRequests from './components/PendingFriendRequests';
 import Posts from './components/Posts';
 import WritePostBox from './components/WritePostBox';
 import {
-  getCurrentUser, getPendingFriendRequests, getUserAndFriendsPosts, getUserWithId
+  getCurrentUser, getPendingFriendRequests, getSkills, getUserAndFriendsPosts, getUserWithId
 } from './services/user';
 import defaultImg from "./img/default-profile.png"
 import "./App.css";
+import Skills from './components/Skills';
 
 const App = () => {
 
@@ -20,6 +21,8 @@ const App = () => {
   const [filter, setFilter] = useState("");
   const [pendingList, setPendingList] = useState([]);
   const [posts, setPosts] = useState([]);
+  const [skills, setSkills] = useState([]);
+
 
   console.log("userid", userId);
 
@@ -36,6 +39,12 @@ const App = () => {
     setPosts([...posts]);
   };
 
+  const refetchSkills = async () => {
+    const skills = await getSkills(userId);
+    console.log("skills", skills);
+    setSkills([...skills]);
+  }
+
   useEffect(() => {
     getUserWithId(userId)
       .then(bod => setUserOfWall(bod));
@@ -45,6 +54,8 @@ const App = () => {
       .then(bod => setPendingList([...bod]));
     getUserAndFriendsPosts(userId)
       .then(bod => setPosts([...bod]));
+    getSkills(userId)
+      .then(bod => setSkills([...bod]));
 }, [userId]);
 
   if (!userOfWall.username) return null;
@@ -75,6 +86,13 @@ const App = () => {
         refetchPosts={refetchPosts}
         pendingList={pendingList}
         current={currentUser.username}
+        show={currentUserIsUserOfWall}
+      />
+
+      <Skills
+        userId={userId}
+        skills={skills}
+        refetchSkills={refetchSkills}
         show={currentUserIsUserOfWall}
       />
 

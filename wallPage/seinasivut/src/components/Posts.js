@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import Likebutton from "./Likebutton";
 import "./Posts.css";
 import PropTypes from "prop-types";
-import CommentBox from "./CommentBox";
 import Comments from "./Comments";
 
 const Posts = (props) => {

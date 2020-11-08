@@ -52,7 +52,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     } else {
       http.csrf()
         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
-      // http.csrf().disable();
+      //http.csrf().disable();
       http.authorizeRequests()
       .antMatchers(HttpMethod.GET, "/", "/join/**", "/register/**", "/css/**", "/js/**", "/img/**")
       .permitAll()

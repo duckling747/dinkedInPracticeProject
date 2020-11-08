@@ -1,7 +1,12 @@
 package projekti.models;
 
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
 
@@ -26,5 +31,7 @@ public class Skill extends AbstractPersistable<Long> {
   @Column(columnDefinition = "TEXT")
   private String description;
 
+  @ManyToMany
+  private Set<Account> likes;
 
 }

@@ -24,10 +24,12 @@ import projekti.models.Comment;
 import projekti.models.FriendRequest;
 import projekti.models.Post;
 import projekti.models.ProfilePicture;
+import projekti.models.Skill;
 import projekti.services.AccountService;
 import projekti.services.FriendService;
 import projekti.services.PostService;
 import projekti.services.ProfilePictureService;
+import projekti.services.SkillService;
 
 @RestController
 @CrossOrigin(origins = {"http://localhost:8080", "http://localhost:3000"})
@@ -44,6 +46,9 @@ public class AccountController {
 
   @Autowired
   private PostService postService;
+
+  @Autowired
+  private SkillService skillService;
 
   private static final String ACCOUNTS = "/accounts";
 
@@ -113,6 +118,17 @@ public class AccountController {
   public void sendComment(@PathVariable Long userId, @PathVariable Long postId,
       @RequestBody Map<String,String> commentJson) {
     postService.addComment(userId, postId, commentJson.get("comment"));
+  }
+
+  @GetMapping(path = ACCOUNTS + "/{userId}/skills")
+  public List<Skill> getSkills(@PathVariable Long userId) {
+    return skillService.getSkills(userId);
+  }
+
+  @PostMapping(path = ACCOUNTS + "/{userId}/skills/{skillId}/like")
+  @ResponseStatus(value = HttpStatus.OK)
+  public void likeSkill(@PathVariable Long userId, @PathVariable Long skillId) {
+    skillService.likeSkill(skillId, userId);
   }
 
   @GetMapping(ACCOUNTS + "/logged")

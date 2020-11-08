@@ -4,11 +4,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.same;
 
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -25,9 +28,11 @@ import org.springframework.transaction.annotation.Transactional;
 import projekti.models.Account;
 import projekti.models.FriendRequest;
 import projekti.models.Post;
+import projekti.models.Skill;
 import projekti.repositories.AccountRepository;
 import projekti.repositories.FriendRequestRepository;
 import projekti.repositories.PostRepository;
+import projekti.repositories.SkillRepository;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
@@ -46,6 +51,9 @@ public class AccountTest {
 
   @Autowired
   private PostRepository postRepository;
+
+  @Autowired
+  private SkillRepository skillRepository;
 
   public static Random R = new Random();
 
@@ -317,6 +325,75 @@ public class AccountTest {
         posts.stream()
         .anyMatch(p -> p.getPost().equals("dpost"))
     );
+  }
+
+  @Test
+  public void likeSkillsWorks() {
+    setFriendsForTests();
+    final Account a = accountRepository.findByUsername("AAA");
+    Skill s = new Skill(a, "skill", "description", new LinkedHashSet<>());
+    s = skillRepository.save(s);
+    a.getSkills().add(s);
+    accountRepository.save(a);
+    final Account b = accountRepository.findByUsername("BBB");
+    final Account c = accountRepository.findByUsername("CCC");
+    s.getLikes().add(b);
+    s.getLikes().add(c);
+    skillRepository.save(s);
+    Set<Account> setlikes = s.getLikes();
+    assertEquals(2, setlikes.size());
+  }
+
+  @Test
+  public void skillQueryWorks() {
+    setFriendsForTests();
+    final Account a = accountRepository.findByUsername("AAA");
+    final Account b = accountRepository.findByUsername("BBB");
+    final Account c = accountRepository.findByUsername("CCC");
+    
+    final Skill s1 = new Skill(a, "skill1", "description", new LinkedHashSet<>());
+    final Skill s2 = new Skill(a, "skill2", "description", new LinkedHashSet<>());
+    final Skill s3 = new Skill(a, "skill3", "description", new LinkedHashSet<>());
+    final Skill s4 = new Skill(a, "skill4", "description", new LinkedHashSet<>());
+    s1.getLikes().add(b);
+    s1.getLikes().add(c);
+    s4.getLikes().add(c);
+
+    a.getSkills().addAll(List.of(s1,s2,s3,s4));
+    accountRepository.save(a);
+    skillRepository.saveAll(List.of(s1,s2,s3,s4));
+
+    final List<Skill> skillsA = skillRepository.findUsersSkills(a.getId(), PageRequest.of(0, 5));
+    assertEquals("skill1", skillsA.get(0).getTitle());
+    assertEquals("skill4", skillsA.get(1).getTitle());
+    assertTrue(skillsA.get(2).getTitle().equals("skill3")
+        || skillsA.get(2).getTitle().equals("skill2"));
+  }
+
+  @Test
+  public void skillQueryWorks2() {
+    setFriendsForTests();
+    final Account a = accountRepository.findByUsername("AAA");
+    final Account b = accountRepository.findByUsername("BBB");
+    final Account c = accountRepository.findByUsername("CCC");
+    
+    final Skill s1 = new Skill(a, "skill1", "description", new LinkedHashSet<>());
+    final Skill s2 = new Skill(a, "skill2", "description", new LinkedHashSet<>());
+    final Skill s3 = new Skill(a, "skill3", "description", new LinkedHashSet<>());
+    final Skill s4 = new Skill(a, "skill4", "description", new LinkedHashSet<>());
+    s2.getLikes().add(b);
+    s2.getLikes().add(c);
+    s3.getLikes().add(c);
+
+    a.getSkills().addAll(List.of(s1,s2,s3,s4));
+    accountRepository.save(a);
+    skillRepository.saveAll(List.of(s1,s2,s3,s4));
+
+    final List<Skill> skillsA = skillRepository.findUsersSkills(a.getId(), PageRequest.of(0, 5));
+    assertEquals("skill2", skillsA.get(0).getTitle());
+    assertEquals("skill3", skillsA.get(1).getTitle());
+    assertTrue(skillsA.get(2).getTitle().equals("skill1")
+        || skillsA.get(2).getTitle().equals("skill4"));
   }
 
 }

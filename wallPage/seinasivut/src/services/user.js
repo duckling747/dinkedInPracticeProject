@@ -114,3 +114,18 @@ export const getComments = async (userId, postId) => {
     const res = await fetch(`/accounts/${userId}/posts/${postId}/comment`);
     return res.json();
 }
+
+export const getSkills = async (userId) => {
+    const res = await fetch(`/accounts/${userId}/skills`);
+    return res.json();
+}
+
+export const likeSkill = async (skillId, userId) => {
+    const res = await fetch(`/accounts/${userId}/skills/${skillId}/like`, {
+        method: "POST",
+        headers: {
+            'X-XSRF-TOKEN': cookieVal
+        }
+    });
+    return res;
+}

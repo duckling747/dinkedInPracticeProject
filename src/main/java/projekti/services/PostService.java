@@ -48,14 +48,8 @@ public class PostService {
   public void likePost(final Long accountId, final Long postId) {
     final Account a = accountRepository.findById(accountId).get();
     final Post p = postRepository.findById(postId).get();
-    final Set<Account> likes = p.getLikes();
-    if (likes.contains(a)) {
-      likes.remove(a);
-      a.getLikedPosts().remove(p);
-    } else {
-      likes.add(a);
-      a.getLikedPosts().add(p);
-    }
+    p.getLikes().add(a);
+    a.getLikedPosts().add(p);
     accountRepository.save(a);
     postRepository.save(p);
   }
